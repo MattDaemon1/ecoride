@@ -77,11 +77,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Covoiturage::class, mappedBy: 'user')]
     private Collection $covoiturages;
 
+    /**
+     * @var Collection<int, Configuration>
+     */
+    #[ORM\OneToMany(targetEntity: Configuration::class, mappedBy: 'user')]
+    private Collection $configurations;
+
     public function __construct()
     {
         $this->avis = new ArrayCollection();
         $this->voitures = new ArrayCollection();
         $this->covoiturages = new ArrayCollection();
+        $this->configurations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -344,6 +351,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($covoiturage->getUser() === $this) {
                 $covoiturage->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Configuration>
+     */
+    public function getConfigurations(): Collection
+    {
+        return $this->configurations;
+    }
+
+    public function addConfiguration(Configuration $configuration): static
+    {
+        if (!$this->configurations->contains($configuration)) {
+            $this->configurations->add($configuration);
+            $configuration->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeConfiguration(Configuration $configuration): static
+    {
+        if ($this->configurations->removeElement($configuration)) {
+            // set the owning side to null (unless already changed)
+            if ($configuration->getUser() === $this) {
+                $configuration->setUser(null);
             }
         }
 

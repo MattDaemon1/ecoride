@@ -3,8 +3,10 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Avis;
+use App\Entity\Configuration;
 use App\Entity\Covoiturage;
 use App\Entity\Marque;
+use App\Entity\Parametre;
 use App\Entity\Role;
 use App\Entity\User;
 use App\Entity\Voiture;
@@ -50,8 +52,10 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Marque', 'fas fa-list', Marque::class);
         yield MenuItem::linkToCrud('Role', 'fa-solid fa-people-group', Role::class);
         yield MenuItem::linkToCrud('Avis', 'fa-solid fa-comments', Avis::class);
-        yield MenuItem::linkToCrud('Covoiturage', 'fa-solid fa-car-side', Covoiturage::class);
+        yield MenuItem::linkToCrud('Covoiturage', 'fa-solid fa-key', Covoiturage::class);
         yield MenuItem::linkToCrud('User', 'fa-solid fa-user', User::class);
         yield MenuItem::linkToCrud('Voiture', 'fa-solid fa-car', Voiture::class);
+        yield MenuItem::linkToCrud('Configuration', 'fa-solid fa-screwdriver-wrench', Configuration::class);
+        yield MenuItem::linkToCrud('Parametre', 'fa-solid fa-gear', Parametre::class);
     }
 }

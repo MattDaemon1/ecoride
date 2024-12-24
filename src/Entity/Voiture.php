@@ -166,4 +166,9 @@ class Voiture
 
         return $this;
     }
+
+    public function __toString(): string
+    {
+        return $this->marque . ' ' . $this->modele; // Ou tout autre format pertinent
+    }
 }
