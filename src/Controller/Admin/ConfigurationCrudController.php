@@ -21,7 +21,7 @@ class ConfigurationCrudController extends AbstractCrudController
     {
         yield IdField::new('id')->hideOnForm();
         yield AssociationField::new('user');
-        yield AssociationField::new('parametre');
+        yield AssociationField::new('parametres');
         
     }
     

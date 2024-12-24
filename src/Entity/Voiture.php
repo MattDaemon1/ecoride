@@ -167,8 +167,12 @@ class Voiture
         return $this;
     }
 
-    public function __toString(): string
+        public function __toString(): string
     {
-        return $this->marque . ' ' . $this->modele; // Ou tout autre format pertinent
+        $marque = $this->marque ? (string) $this->marque : 'Marque inconnue';
+        $modele = $this->modele ?? 'Modèle inconnu';
+
+        return $marque . ' ' . $modele;
     }
+
 }
