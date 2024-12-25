@@ -3,3 +3,11 @@ controllers:
         path: ../src/Controller/
         namespace: App\Controller
     type: attribute
+
+search_route:
+    path: /search
+    controller: App\Controller\SearchController::index
+
+mentions_legales:
+    path: /mentions-legales
+    controller: App\Controller\DefaultController::mentions
