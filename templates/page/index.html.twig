@@ -17,4 +17,20 @@
 			</div>
 		</div>
 	</div>
-{% endblock %}
+	<!-- Barre de recherche -->
+	<form method="get" action="{{ path('search_route') }}" class="mt-4">
+		<div class="mb-3">
+			<label for="departure" class="form-label">Ville de départ</label>
+			<input type="text" class="form-control" id="departure" name="departure" placeholder="Ex : Paris">
+		</div>
+		<div class="mb-3">
+			<label for="arrival" class="form-label">Ville d'arrivée</label>
+			<input type="text" class="form-control" id="arrival" name="arrival" placeholder="Ex : Lyon">
+		</div>
+		<div class="mb-3">
+			<label for="date" class="form-label">Date</label>
+			<input type="date" class="form-control" id="date" name="date">
+		</div>
+		<button type="submit" class="btn btn-success btn-lg">Rechercher</button>
+	</form>
+</div></div>{% endblock %}

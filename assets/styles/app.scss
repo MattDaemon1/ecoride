@@ -1,13 +1,95 @@
 @use "~bootstrap/scss/bootstrap"; // Importation de Bootstrap
 
-$primary-color: #ffffff; // Déclaration de votre couleur de fond
-$text-color: #000000; // Déclaration de votre couleur de texte
+// Palette de couleurs
+$primary-color: #2ECC71; // Vert nature
+$secondary-color: #3498DB; // Bleu ciel
+$background-color: #ECF0F1; // Gris clair
+$text-color: #2C3E50; // Texte principal
+$secondary-text-color: #7F8C8D; // Texte secondaire
+$button-hover-color: #27AE60; // Vert foncé pour le hover
+$link-hover-color: #2980B9; // Bleu foncé pour le hover
 
+// Typographie
+$font-title: 'Poppins', sans-serif;
+$font-body: 'Roboto', sans-serif;
+
+// Styles globaux
 body {
-    background-color: $primary-color; // Fond blanc
-    color: $text-color;              // Texte noir
+  font-family: $font-body;
+  background-color: $background-color;
+  color: $text-color;
+  margin: 0;
+  padding: 0;
+}
+
+h1, h2, h3 {
+  font-family: $font-title;
+  font-weight: 700; // Bold
+  color: green; 
+}
+
+p {
+  font-family: $font-body;
+  color: $secondary-text-color;
+}
+
+// Boutons
+button {
+  background-color: $primary-color;
+  color: #FFFFFF; // Blanc
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: $button-hover-color;
   }
-  
-  h1 {
-    color: $text-color; // Texte noir pour les titres
+}
+
+// Barre de navigation
+.navbar {
+  background-color: $secondary-color;
+  color: #FFFFFF; // Blanc
+  padding: 15px;
+  display: flex;
+  align-items: center;
+
+  a {
+    color: #FFFFFF;
+    text-decoration: none;
+    margin: 0 10px;
+
+    &:hover {
+      color: $background-color; // Gris clair
+    }
   }
+}
+
+// Liens
+a {
+  color: $secondary-color;
+  text-decoration: none;
+
+  &:hover {
+    color: $link-hover-color;
+  }
+}
+
+// Formulaires (optionnel)
+input, textarea, select {
+  font-family: $font-body;
+  padding: 10px;
+  border: 1px solid $secondary-text-color;
+  border-radius: 5px;
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 10px;
+
+  &:focus {
+    border-color: $primary-color;
+    outline: none;
+  }
+}
