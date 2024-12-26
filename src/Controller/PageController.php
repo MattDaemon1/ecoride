@@ -15,4 +15,12 @@ class PageController extends AbstractController
             'controller_name' => 'PageController',
         ]);
     }
+
+    #[Route('/contact', name: 'app_contact')]
+    public function contact(): Response
+    {
+        return $this->render('page/contact.html.twig', [
+            'controller_name' => 'PageController',
+        ]);
+    }
 }
