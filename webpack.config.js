@@ -22,6 +22,7 @@ Encore
      */
     .addEntry('app', './assets/app.js')
 
+
     // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
     .splitEntryChunks()
 
@@ -54,7 +55,12 @@ Encore
     })
 
     // enables Sass/SCSS support
-    .enableSassLoader()
+    .enableSassLoader(options => {
+        options.sassOptions = {
+            includePaths: ["./node_modules", "./assets/styles"]
+        };
+    })     
+
     .copyFiles({
         from: './assets/images',
         to: 'images/[path][name].[ext]',
@@ -72,6 +78,6 @@ Encore
 
     // uncomment if you're having problems with a jQuery plugin
     .autoProvidejQuery()
-;
+    ;
 
 module.exports = Encore.getWebpackConfig();

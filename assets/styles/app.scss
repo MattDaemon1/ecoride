@@ -1,95 +1,125 @@
-@use "~bootstrap/scss/bootstrap"; // Importation de Bootstrap
+// Import Bootstrap
+@import "~bootstrap/scss/bootstrap";
 
-// Palette de couleurs
+// Variables personnalisées
 $primary-color: #2ECC71; // Vert nature
 $secondary-color: #3498DB; // Bleu ciel
-$background-color: #ECF0F1; // Gris clair
-$text-color: #2C3E50; // Texte principal
-$secondary-text-color: #7F8C8D; // Texte secondaire
-$button-hover-color: #27AE60; // Vert foncé pour le hover
-$link-hover-color: #2980B9; // Bleu foncé pour le hover
+$background-color: #ECF0F1; // Fond gris clair
+$text-color: #2C3E50; // Gris foncé pour le texte
+$secondary-text-color: #7F8C8D; // Gris pour texte secondaire
 
-// Typographie
-$font-title: 'Poppins', sans-serif;
-$font-body: 'Roboto', sans-serif;
-
-// Styles globaux
+// Global Styles
 body {
-  font-family: $font-body;
+  font-family: 'Roboto', sans-serif;
   background-color: $background-color;
   color: $text-color;
-  margin: 0;
-  padding: 0;
 }
 
-h1, h2, h3 {
-  font-family: $font-title;
-  font-weight: 700; // Bold
-  color: green; 
-}
-
-p {
-  font-family: $font-body;
-  color: $secondary-text-color;
-}
-
-// Boutons
-button {
-  background-color: $primary-color;
-  color: #FFFFFF; // Blanc
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
+h1,
+h2,
+h3 {
+  font-family: 'Poppins', sans-serif;
+  color: $primary-color;
   font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s;
-
-  &:hover {
-    background-color: $button-hover-color;
-  }
 }
 
-// Barre de navigation
-.nav {
-  background-color: $secondary-color;
-  color: #FFFFFF; // Blanc
-  padding: 15px;
-  display: flex;
-  align-items: center;
+// Header
+header {
+  background-color: white;
+  padding: 15px 0;
 
   a {
-    color: #FFFFFF;
+    color: $text-color;
     text-decoration: none;
-    margin: 0 10px;
 
     &:hover {
-      color: $background-color; // Gris clair
+      text-decoration: underline;
+    }
+  }
+
+  .btn-outline-primary {
+    color: $secondary-color;
+    border-color: $secondary-color;
+
+    &:hover {
+      background-color: $secondary-color;
+      color: white;
+    }
+  }
+
+  .btn-primary {
+    background-color: $primary-color;
+    border-color: $primary-color;
+
+    &:hover {
+      background-color: darken($primary-color, 10%);
     }
   }
 }
 
-// Liens
-a {
-  color: $secondary-color;
-  text-decoration: none;
+// Footer
+footer {
+  background-color: white;
+  color: $text-color;
+  padding: 20px 0;
 
-  &:hover {
-    color: $link-hover-color;
+  a {
+    color: $text-color;
+    text-decoration: underline;
+
+    &:hover {
+      text-decoration: none;
+    }
+  }
+
+  .border-top {
+    border-color: rgba(255, 255, 255, 0.5);
   }
 }
 
-// Formulaires (optionnel)
-input, textarea, select {
-  font-family: $font-body;
+// Barre de recherche
+form {
+  background-color: #ffffff; // Fond blanc
+  border: 1px solid #ddd; // Légère bordure grise
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); // Ombre douce
   padding: 10px;
-  border: 1px solid $secondary-text-color;
-  border-radius: 5px;
-  width: 100%;
-  box-sizing: border-box;
-  margin-bottom: 10px;
 
-  &:focus {
-    border-color: $primary-color;
-    outline: none;
+  input {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+  }
+
+  button {
+    background-color: $primary-color;
+    border: none;
+    color: white;
+    font-weight: bold;
+    padding: 10px 20px;
+
+    &:hover {
+      background-color: darken($primary-color, 10%);
+    }
+  }
+}
+
+// Cards dans la page de résultats (optionnel)
+.card {
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  margin-bottom: 15px;
+}
+
+// Tableau de bord
+.dashboard {
+  background-color: $background-color;
+
+  h2 {
+    color: $primary-color;
+    font-weight: bold;
   }
 }
