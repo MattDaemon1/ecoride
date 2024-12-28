@@ -4,6 +4,32 @@
 {% endblock %}
 
 {% block body %}
+
+	<!-- Section avec image de fond -->
+	<div class="hero-section position-relative" style="background-image: url('{{ asset('build/images/nature.jpeg') }}'); background-size: cover; background-position: center; height: 400px;">
+		<div class="overlay bg-dark position-absolute w-100 h-100" style="opacity: 0.5;"></div>
+		<div class="container text-center text-white position-relative" style="z-index: 1;">
+			<h1 class="display-4 fw-bold" id="h1main">Planifiez votre prochain trajet en toute simplicité avec EcoRide.</h1>
+		</div>
+	</div>
+
+	<!-- Barre de recherche -->
+	<div class="search-bar bg-light py-4 px-3 rounded shadow-sm">
+		<form method="get" action="{{ path('search_route') }}" class="row g-3 align-items-center">
+			<div class="col-md-3">
+				<input type="text" class="form-control" id="departure" name="departure" placeholder="Départ">
+			</div>
+			<div class="col-md-3">
+				<input type="text" class="form-control" id="arrival" name="arrival" placeholder="Arrivée">
+			</div>
+			<div class="col-md-3">
+				<input type="date" class="form-control" id="date" name="date">
+			</div>
+			<div class="col-md-3 d-flex align-items-end">
+				<button type="submit" class="btn btn-success w-100">Rechercher</button>
+			</div>
+		</form>
+	</div>
 	<div class="row flex-lg-row-reverse align-items-center g-5 py-5">
 		<div class="col-10 col-sm-8 col-lg-6">
 			<img src="{{ asset('build/images/logo_Ecoride.png') }}" class="d-block mx-lg-auto img-fluid" alt="Logo Ecoride" width="700" height="500" loading="lazy">
@@ -17,18 +43,5 @@
 			</div>
 		</div>
 	</div>
-	<!-- Barre de recherche -->
-	<form method="get" action="{{ path('search_route') }}" class="d-flex align-items-center bg-white p-3 rounded shadow-sm">
-		<div class="me-2 flex-fill">
-			<input type="text" class="form-control" id="departure" name="departure" placeholder="Ville de départ">
-		</div>
-		<div class="me-2 flex-fill">
-			<input type="text" class="form-control" id="arrival" name="arrival" placeholder="Ville d'arrivée">
-		</div>
-		<div class="me-2">
-			<input type="date" class="form-control" id="date" name="date">
-		</div>
-		<button type="submit" class="btn btn-success px-4">Rechercher</button>
-	</form>
 
-</div></div>{% endblock %}
+{% endblock %}

@@ -1,10 +1,14 @@
 {% extends '@EasyAdmin/page/content.html.twig' %}
 
-{% block content_title %}Tableau de bord
+{% block content_title %}
+    Tableau de bord
 {% endblock %}
 
 {% block main %}
+    <h2>Bienvenue sur l'administration EcoRide !</h2>
 
-	<h2>Bienvenue sur l'administration EcoRide !</h2>
-
+    {# Ajout d'un lien vers l'accueil #}
+    <p>
+        <a href="{{ path('app_home') }}">Retour à l'accueil</a>
+    </p>
 {% endblock %}

@@ -11,3 +11,7 @@ search_route:
 mentions_legales:
     path: /mentions-legales
     controller: App\Controller\DefaultController::mentions
+
+activity_log_create:
+    path: /create-log
+    controller: App\Controller\ActivityLogController::createLog

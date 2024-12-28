@@ -4,122 +4,150 @@
 // Variables personnalisées
 $primary-color: #198754; // Vert nature
 $secondary-color: #3498DB; // Bleu ciel
-$background-color: #ECF0F1; // Fond gris clair
+$background-color: #ffffff; // Fond gris clair
 $text-color: #2C3E50; // Gris foncé pour le texte
 $secondary-text-color: #7F8C8D; // Gris pour texte secondaire
 
-// Global Styles
+/* Global Styles */
 body {
-  font-family: 'Roboto', sans-serif;
-  background-color: $background-color;
-  color: $text-color;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f8f9fa;
+  color: #333;
 }
 
-h1,
-h2,
-h3 {
-  font-family: 'Poppins', sans-serif;
-  color: $primary-color;
-  font-weight: bold;
-}
-
-// Header
+/* Header */
 header {
-  background-color: white;
-  padding: 15px 0;
-
-  a {
-    color: $text-color;
-    text-decoration: none;
+  background-color: #fff;
+  border-bottom: 1px solid #ddd;
+  .nav-link {
+    color: #2e7d32;
+    font-weight: bold;
+    transition: color 0.3s;
 
     &:hover {
+      color: #1b5e20;
       text-decoration: underline;
     }
   }
 
-  .btn-outline-primary {
-    color: $secondary-color;
-    border-color: $secondary-color;
+  .btn {
+    transition: background-color 0.3s, color 0.3s;
+    &.btn-outline-primary {
+      color: #2e7d32;
+      border-color: #2e7d32;
 
-    &:hover {
-      background-color: $secondary-color;
-      color: white;
+      &:hover {
+        color: #fff;
+        background-color: #2e7d32;
+      }
     }
-  }
 
-  .btn-primary {
-    background-color: $primary-color;
-    border-color: $primary-color;
+    &.btn-primary {
+      background-color: #2e7d32;
+      border: none;
 
-    &:hover {
-      background-color: darken($primary-color, 10%);
+      &:hover {
+        background-color: #1b5e20;
+      }
     }
   }
 }
 
-// Footer
+/* Style pour le titre */
+#h1main {
+  color: white; // Définit la couleur du texte en blanc
+  font-size: 3rem; // Ajustez la taille selon vos besoins
+  font-weight: bold; // Pour garantir un texte en gras
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); // Ajoute une ombre pour une meilleure lisibilité sur un arrière-plan
+  text-align: center; // Centrer le texte (optionnel)
+}
+
+/* Titles */
+h1, h2 {
+  color: $primary-color; /* Primary color */
+}
+
+/* Hero Section */
+.hero-section {
+  position: relative;
+  width: 100%;
+  height: 100vh; /* Full screen height */
+  background-size: cover;
+  background-position: center;
+
+  .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+
+  h1 {
+    position: relative;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    z-index: 1;
+  }
+}
+
+/* Search Bar */
+.search-bar {
+  position: relative; /* Change absolute en relative pour éviter qu'il dépasse */
+  margin-top: -50px;
+  left: 50%;
+  transform: translate(-50%, 0); /* Ajuste la position pour qu'il chevauche légèrement l'image */
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 1200px;
+
+  form {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    
+
+    .form-control {
+      border-radius: 5px;
+      border: 1px solid #ddd;
+      padding: 10px;
+    }
+
+    .btn-success {
+      background-color: #2e7d32;
+      border: none;
+      transition: background-color 0.3s;
+
+      &:hover {
+        background-color: #1b5e20;
+      }
+    }
+  }
+}
+
+/* Footer */
 footer {
-  background-color: white;
-  color: $text-color;
+  background-color: #f1f1f1;
+  border-top: 1px solid #ddd;
+  text-align: center;
   padding: 20px 0;
 
   a {
-    color: $text-color;
-    text-decoration: underline;
+    color: #2e7d32;
+    text-decoration: none;
 
     &:hover {
-      text-decoration: none;
-    }
-  }
-
-  .border-top {
-    border-color: rgba(255, 255, 255, 0.5);
-  }
-}
-
-// Barre de recherche
-form {
-  background-color: #ffffff; // Fond blanc
-  border: 1px solid #ddd; // Légère bordure grise
-  border-radius: 10px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); // Ombre douce
-  padding: 10px;
-
-  input {
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 10px;
-  }
-
-  button {
-    background-color: $primary-color;
-    border: none;
-    color: white;
-    font-weight: bold;
-    padding: 10px 20px;
-
-    &:hover {
-      background-color: darken($primary-color, 10%);
+      color: #1b5e20;
+      text-decoration: underline;
     }
   }
 }
 
-// Cards dans la page de résultats (optionnel)
-.card {
-  background-color: white;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  padding: 15px;
-  margin-bottom: 15px;
-}
 
-// Tableau de bord
-.dashboard {
-  background-color: $background-color;
 
-  h2 {
-    color: $primary-color;
-    font-weight: bold;
-  }
-}
+
