@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Form\SearchCovoiturageType;
+use App\Repository\CovoiturageRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -9,21 +11,48 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class SearchController extends AbstractController
 {
-    /**
-     * @Route("/search", name="search_route", methods={"GET"})
-     */
-    public function index(Request $request): Response
+    #[Route('/', name: 'app_search')]
+    public function index(Request $request, CovoiturageRepository $covoiturageRepository): Response
     {
-        // Logique de recherche à implémenter ici
-        $departure = $request->query->get('lieuDepart');
-        $arrival = $request->query->get('lieuArrivee');
-        $date = $request->query->get('dateDepart');
+        $form = $this->createForm(SearchCovoiturageType::class);
+        $form->handleRequest($request);
 
-        // Vous pouvez rendre une vue ou retourner une réponse JSON
+        $covoiturages = [];
+        $upcomingCovoiturages = [];
+        $searchCriteria = [];
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+            $searchCriteria = [
+                'lieuDepart' => $data['lieuDepart'],
+                'lieuArrivee' => $data['lieuArrivee'],
+                'dateDepart' => $data['dateDepart']
+            ];
+
+            try {
+                $covoiturages = $covoiturageRepository->findByCriteria(
+                    $data['lieuDepart'],
+                    $data['lieuArrivee'],
+                    $data['dateDepart']
+                );
+
+                // Si aucun covoiturage n'est trouvé, chercher les prochains disponibles
+                if (empty($covoiturages)) {
+                    $upcomingCovoiturages = $covoiturageRepository->findUpcomingResults(
+                        $data['lieuDepart'],
+                        $data['lieuArrivee']
+                    );
+                }
+            } catch (\Exception $e) {
+                $this->addFlash('error', 'Une erreur est survenue lors de la recherche. Veuillez réessayer.');
+            }
+        }
+
         return $this->render('search/index.html.twig', [
-            'departure' => $departure,
-            'arrival' => $arrival,
-            'date' => $date,
+            'form' => $form->createView(),
+            'covoiturages' => $covoiturages,
+            'upcomingCovoiturages' => $upcomingCovoiturages,
+            'searchCriteria' => $searchCriteria
         ]);
     }
 }

@@ -16,19 +16,19 @@ class Covoiturage
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATE_MUTABLE)] // Stocke uniquement la date
     private ?\DateTimeInterface $dateDepart = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::TIME_MUTABLE)] // Stocke uniquement l'heure
     private ?\DateTimeInterface $heureDepart = null;
 
     #[ORM\Column(length: 50)]
     private ?string $lieuDepart = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATE_MUTABLE)] // Stocke uniquement la date
     private ?\DateTimeInterface $dateArrivee = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::TIME_MUTABLE)] // Stocke uniquement l'heure
     private ?\DateTimeInterface $heureArrivee = null;
 
     #[ORM\Column(length: 50)]
@@ -40,8 +40,8 @@ class Covoiturage
     #[ORM\Column]
     private ?int $nbPlace = null;
 
-    #[ORM\Column]
-    private ?float $prixPersonne = null;
+    #[ORM\Column] // Stocke le prix en crédits
+    private ?int $prixPersonne = null;
 
     #[ORM\ManyToOne(inversedBy: 'covoiturages')]
     private ?User $user = null;
@@ -161,12 +161,12 @@ class Covoiturage
         return $this;
     }
 
-    public function getPrixPersonne(): ?float
+    public function getPrixPersonne(): ?int
     {
         return $this->prixPersonne;
     }
 
-    public function setPrixPersonne(float $prixPersonne): static
+    public function setPrixPersonne(int $prixPersonne): static
     {
         $this->prixPersonne = $prixPersonne;
 
