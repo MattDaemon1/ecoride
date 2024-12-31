@@ -193,4 +193,14 @@ h1, h2 {
   }
 }
 
+.autocomplete-results {
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
 
+.autocomplete-item:hover {
+  background-color: #f0f0f0;
+}
+
+.autocomplete-item:last-child {
+  border-bottom: none;
+}
