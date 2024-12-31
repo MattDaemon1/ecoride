@@ -11,7 +11,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class SearchController extends AbstractController
 {
-    #[Route('/', name: 'app_search')]
+    #[Route('/search', name: 'app_search')]
     public function index(Request $request, CovoiturageRepository $covoiturageRepository): Response
     {
         $form = $this->createForm(SearchCovoiturageType::class);

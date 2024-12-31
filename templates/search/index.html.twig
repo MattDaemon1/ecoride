@@ -1,124 +1,103 @@
 {# templates/search/index.html.twig #}
 {% extends 'base.html.twig' %}
 
-{% block title %}Rechercher un covoiturage{% endblock %}
+{% block title %}Rechercher un covoiturage
+{% endblock %}
 
 {% block body %}
-<div class="container mt-4">
-    {# Affichage des messages flash #}
-    {% for label, messages in app.flashes %}
-        {% for message in messages %}
-            <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
-                {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        {% endfor %}
-    {% endfor %}
+	<div
+		class="container mt-4">
+		{# Affichage des messages flash #}
+		{% for label, messages in app.flashes %}
+			{% for message in messages %}
+				<div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+					{{ message }}
+					<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+				</div>
+			{% endfor %}
+		{% endfor %}
+		<div class="hero-section position-relative" style="background-image: url('{{ asset('build/images/nature-search.jpeg') }}'); background-size: cover; background-position: center; height: 400px;">
+			<div class="overlay bg-dark position-absolute w-100 h-100" style="opacity: 0.5;"></div>
+			<div class="container text-center text-white position-relative" style="z-index: 1;">
+				<h1 class="display-4 fw-bold" id="h1main">Rechercher un covoiturage avec EcoRide</h1>
+			</div>
+		</div>
 
-    <h1 class="mb-4">Rechercher un covoiturage</h1>
 
-    {{ form_start(form, {'attr': {'class': 'row g-3 mb-4'}}) }}
-        <div class="col-md-3">
-            {{ form_row(form.lieuDepart) }}
-        </div>
-        <div class="col-md-3">
-            {{ form_row(form.lieuArrivee) }}
-        </div>
-        <div class="col-md-3">
-            {{ form_row(form.dateDepart) }}
-        </div>
-        <div class="col-md-3 d-flex align-items-end">
-            <button type="submit" class="btn btn-primary w-100">
-                <i class="fas fa-search"></i> Rechercher
-            </button>
-        </div>
-    {{ form_end(form) }}
+		<div class="search-bar bg-light py-4 px-3 rounded shadow-sm">
+			{{ form_start(form, {'attr': {'class': 'row g-3 align-items-center'}}) }}
+			<div class="col-md-3">
+				{{ form_row(form.lieuDepart) }}
+			</div>
+			<div class="col-md-3">
+				{{ form_row(form.lieuArrivee) }}
+			</div>
+			<div class="col-md-3">
+				{{ form_row(form.dateDepart) }}
+			</div>
+			<div class="col-md-3 d-flex align-items-end">
+				<button type="submit" class="btn btn-success w-100">
+					<i class="fas fa-search"></i>
+					Rechercher
+				</button>
+			</div>
+			{{ form_end(form) }}
+		</div>
 
-    {% if searchCriteria is not empty %}
-        <div class="mb-4">
-            <h5>Critères de recherche :</h5>
-            <p>
-                De <strong>{{ searchCriteria.lieuDepart }}</strong> 
-                à <strong>{{ searchCriteria.lieuArrivee }}</strong>
-                le <strong>{{ searchCriteria.dateDepart|date('d/m/Y') }}</strong>
-            </p>
-        </div>
-    {% endif %}
+		{% if searchCriteria is not empty %}
+			<div class="mb-4">
+				<h5>Critères de recherche :</h5>
+				<p>
+					De
+					<strong>{{ searchCriteria.lieuDepart }}</strong>
+					à
+					<strong>{{ searchCriteria.lieuArrivee }}</strong>
+					le
+					<strong>{{ searchCriteria.dateDepart|date('d/m/Y') }}</strong>
+				</p>
+			</div>
+		{% endif %}
 
-    {% if covoiturages is not empty %}
-        <div class="row">
-            {% for covoiturage in covoiturages %}
-                <div class="col-md-6 mb-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center mb-3">
-                                <img src="{{ asset('images/default-avatar.png') }}" 
-                                     class="rounded-circle me-3" 
-                                     style="width: 50px; height: 50px;">
-                                <div>
-                                    <h5 class="card-title mb-0">{{ covoiturage.user.pseudo }}</h5>
-                                    <small class="text-muted">{{ covoiturage.user.prenom }}</small>
-                                </div>
-                            </div>
-                            
-                            <div class="card-text">
-                                <div class="mb-2">
-                                    <i class="fas fa-map-marker-alt text-primary"></i>
-                                    <strong>Départ:</strong> {{ covoiturage.lieuDepart }}
-                                    <br>
-                                    <i class="fas fa-clock text-primary"></i>
-                                    {{ covoiturage.dateDepart|date('d/m/Y') }} à {{ covoiturage.heureDepart|date('H:i') }}
-                                </div>
-                                
-                                <div class="mb-2">
-                                    <i class="fas fa-map-marker-alt text-success"></i>
-                                    <strong>Arrivée:</strong> {{ covoiturage.lieuArrivee }}
-                                    <br>
-                                    <i class="fas fa-clock text-success"></i>
-                                    {{ covoiturage.dateArrivee|date('d/m/Y') }} à {{ covoiturage.heureArrivee|date('H:i') }}
-                                </div>
+		<div class="container mt-5">
+			{% if covoiturages is not empty %}
+				<div class="row">
+					{% for covoiturage in covoiturages %}
+						<div class="col-md-6 mb-4">
+							<div class="card">
+								<div class="card-body">
+									<h5 class="card-title">{{ covoiturage.user.pseudo }}</h5>
+									<p class="card-text">
+										<i class="fas fa-map-marker-alt text-primary"></i>
+										{{ covoiturage.lieuDepart }}
+										→
+										<i class="fas fa-map-marker-alt text-success"></i>
+										{{ covoiturage.lieuArrivee }}
+									</p>
+									<p class="card-text">
+										<i class="fas fa-clock"></i>
+										{{ covoiturage.dateDepart|date('d/m/Y') }}
+										à
+										{{ covoiturage.heureDepart|date('H:i') }}
+									</p>
+									<p class="card-text">
+										<span class="badge bg-info">{{ covoiturage.nbPlace }}
+											place(s) disponible(s)</span>
+										<span class="badge bg-success">{{ covoiturage.prixPersonne }}
+											€</span>
+									</p>
+									<a href="#" class="btn btn-outline-primary w-100">Voir les détails</a>
+								</div>
+							</div>
+						</div>
+					{% endfor %}
+				</div>
+			{% else %}
+				<div class="alert alert-warning">
+					<i class="fas fa-exclamation-triangle"></i>
+					Aucun covoiturage trouvé pour ces critères.
+				</div>
+			{% endif %}
+		</div>
 
-                                <div class="d-flex justify-content-between align-items-center mt-3">
-                                    <div>
-                                        <span class="badge bg-info">
-                                            <i class="fas fa-users"></i> {{ covoiturage.nbPlace }} place(s)
-                                        </span>
-                                        {% if covoiturage.voiture.energie == 'Electrique' %}
-                                            <span class="badge bg-success">
-                                                <i class="fas fa-leaf"></i> Écologique
-                                            </span>
-                                        {% endif %}
-                                    </div>
-                                    <div class="h5 mb-0">{{ covoiturage.prixPersonne }} €</div>
-                                </div>
-                            </div>
-                            
-                            <div class="mt-3">
-                                <a href="#" class="btn btn-outline-primary btn-sm w-100">
-                                    <i class="fas fa-info-circle"></i> Voir les détails
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
-        </div>
-    {% elseif upcomingCovoiturages is not empty %}
-        <div class="alert alert-info">
-            <i class="fas fa-info-circle"></i> 
-            Aucun covoiturage trouvé à cette date. Voici les prochains voyages disponibles :
-        </div>
-        <div class="row">
-            {# Même structure que pour les covoiturages #}
-            {% for covoiturage in upcomingCovoiturages %}
-                {# Copier le même bloc de carte que ci-dessus #}
-            {% endfor %}
-        </div>
-    {% elseif searchCriteria is not empty %}
-        <div class="alert alert-warning">
-            <i class="fas fa-exclamation-triangle"></i>
-            Aucun covoiturage disponible pour cet itinéraire.
-        </div>
-    {% endif %}
-</div>
-{% endblock %}
+	
+</div>{% endblock %}

@@ -32,7 +32,7 @@ class CovoiturageCrudController extends AbstractCrudController
         yield TextField::new('lieuArrivee');
         yield TextField::new('statut');
         yield IntegerField::new('nbPlace');
-        yield MoneyField::new('prixPersonne')->setCurrency('EUR')->setStoredAsCents(false);
+        yield MoneyField::new('prixPersonne')->setCurrency('Crédit')->setStoredAsCents(false);
         yield AssociationField::new('user');
         yield AssociationField::new('voiture');
         
