@@ -53,4 +53,22 @@ class CovoiturageRepository extends ServiceEntityRepository
 
         return $qb->getQuery()->getResult();
     }
+
+    public function findNextAvailable(string $lieuDepart, string $lieuArrivee, \DateTime $date): ?Covoiturage
+{
+    return $this->createQueryBuilder('c')
+        ->where('c.lieuDepart = :depart')
+        ->andWhere('c.lieuArrivee = :arrivee')
+        ->andWhere('c.dateDepart > :date')
+        ->andWhere('c.nbPlace > 0')
+        ->setParameter('depart', $lieuDepart)
+        ->setParameter('arrivee', $lieuArrivee)
+        ->setParameter('date', $date)
+        ->orderBy('c.dateDepart', 'ASC')
+        ->setMaxResults(1)
+        ->getQuery()
+        ->getOneOrNullResult();
+}
+    
+
 }

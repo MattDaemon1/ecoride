@@ -14,9 +14,11 @@ class SearchController extends AbstractController
     #[Route('/search', name: 'app_search')]
     public function index(Request $request, CovoiturageRepository $covoiturageRepository): Response
     {
-        $form = $this->createForm(SearchCovoiturageType::class);
+        $form = $this->createForm(SearchCovoiturageType::class, null, [
+            'method' => 'GET'
+        ]);
+        
         $form->handleRequest($request);
-
         $covoiturages = [];
         $upcomingCovoiturages = [];
         $searchCriteria = [];
@@ -36,12 +38,23 @@ class SearchController extends AbstractController
                     $data['dateDepart']
                 );
 
-                // Si aucun covoiturage n'est trouvé, chercher les prochains disponibles
                 if (empty($covoiturages)) {
                     $upcomingCovoiturages = $covoiturageRepository->findUpcomingResults(
                         $data['lieuDepart'],
                         $data['lieuArrivee']
                     );
+
+                    if (!empty($upcomingCovoiturages)) {
+                        $this->addFlash(
+                            'info',
+                            'Aucun covoiturage trouvé à cette date. Voici les prochains trajets disponibles.'
+                        );
+                    } else {
+                        $this->addFlash(
+                            'warning',
+                            'Aucun covoiturage disponible pour ce trajet.'
+                        );
+                    }
                 }
             } catch (\Exception $e) {
                 $this->addFlash('error', 'Une erreur est survenue lors de la recherche. Veuillez réessayer.');
@@ -53,6 +66,15 @@ class SearchController extends AbstractController
             'covoiturages' => $covoiturages,
             'upcomingCovoiturages' => $upcomingCovoiturages,
             'searchCriteria' => $searchCriteria
+        ]);
+    }
+
+
+    #[Route('/covoiturage_detail', name: 'app_covoiturage_detail')]
+    public function contact(): Response
+    {
+        return $this->render('search/covoiturage_detail.html.twig', [
+            'controller_name' => 'SearchController',
         ]);
     }
 }

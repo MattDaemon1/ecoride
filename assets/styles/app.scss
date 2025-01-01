@@ -20,6 +20,7 @@ body {
 header {
   background-color: #fff;
   border-bottom: 1px solid #ddd;
+
   .nav-link {
     color: #2e7d32;
     font-weight: bold;
@@ -33,6 +34,7 @@ header {
 
   .btn {
     transition: background-color 0.3s, color 0.3s;
+
     &.btn-outline-primary {
       color: #2e7d32;
       border-color: #2e7d32;
@@ -64,15 +66,18 @@ header {
 }
 
 /* Titles */
-h1, h2 {
-  color: $primary-color; /* Primary color */
+h1,
+h2 {
+  color: $primary-color;
+  /* Primary color */
 }
 
 /* Hero Section */
 .hero-section {
   position: relative;
   width: 100%;
-  height: 100vh; /* Full screen height */
+  height: 100vh;
+  /* Full screen height */
   background-size: cover;
   background-position: center;
 
@@ -94,10 +99,12 @@ h1, h2 {
 
 /* Search Bar */
 .search-bar {
-  position: relative; /* Change absolute en relative pour éviter qu'il dépasse */
+  position: relative;
+  /* Change absolute en relative pour éviter qu'il dépasse */
   margin-top: -50px;
   left: 50%;
-  transform: translate(-50%, 0); /* Ajuste la position pour qu'il chevauche légèrement l'image */
+  transform: translate(-50%, 0);
+  /* Ajuste la position pour qu'il chevauche légèrement l'image */
   background-color: #fff;
   padding: 20px;
   border-radius: 10px;
@@ -110,7 +117,7 @@ h1, h2 {
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    
+
 
     .form-control {
       border-radius: 5px;
@@ -132,10 +139,13 @@ h1, h2 {
 
 /* Footer */
 .footer-container {
-  position: fixed; /* Fixe le footer en bas */
+  position: fixed;
+  /* Fixe le footer en bas */
   bottom: 0;
-  width: 100%; /* Prend toute la largeur */
-  background-color: #ffffff; /* Fond blanc */
+  width: 100%;
+  /* Prend toute la largeur */
+  background-color: #ffffff;
+  /* Fond blanc */
   color: #2e7d32;
 
   .footer {
@@ -164,6 +174,7 @@ h1, h2 {
 .card {
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 10px; /* Ajoute une marge interne */
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 
   &:hover {
@@ -172,9 +183,10 @@ h1, h2 {
   }
 
   .card-body {
-    h5 {
+    padding: 10px; /* Pour s'assurer que le contenu est bien espacé */
+    
+    h5.card-title {
       margin-bottom: 10px;
-      color: $primary-color;
     }
 
     .badge {
@@ -182,25 +194,42 @@ h1, h2 {
     }
 
     .btn-outline-primary {
-      border-color: $secondary-color;
-      color: $secondary-color;
+      background-color: #2e7d32;
+      color: white;
 
       &:hover {
-        background-color: $secondary-color;
+        background-color: #1b5e20;
         color: white;
       }
     }
   }
 }
 
-.autocomplete-results {
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+
+.autocomplete-item {
+  padding: 8px 12px;
+  cursor: pointer;
+  border-bottom: 1px solid #eee;
 }
 
 .autocomplete-item:hover {
-  background-color: #f0f0f0;
+  background-color: #f8f9fa;
 }
 
 .autocomplete-item:last-child {
   border-bottom: none;
+}
+
+.validation-message {
+  font-size: 0.8em;
+  margin-top: 4px;
+}
+
+.validation-indicator {
+  font-size: 1.2em;
+}
+
+.form-group {
+  position: relative;
+  margin-bottom: 1.5rem;
 }

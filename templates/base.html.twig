@@ -26,84 +26,249 @@
 
 			{% include '_partials/footer.html.twig' %}
 
-			<script>
-				document.addEventListener('DOMContentLoaded', function () {
-const setupAutocomplete = (inputElement) => {
-let timeout = null;
-const resultsDiv = document.createElement('div');
-resultsDiv.className = 'autocomplete-results';
-inputElement.parentNode.appendChild(resultsDiv);
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const inputs = ['#search_covoiturage_lieuDepart', '#search_covoiturage_lieuArrivee'];
+    let currentFocus;
 
-// Style pour la div des résultats
-resultsDiv.style.position = 'absolute';
-resultsDiv.style.zIndex = '1000';
-resultsDiv.style.backgroundColor = 'white';
-resultsDiv.style.width = '100%';
-resultsDiv.style.maxHeight = '200px';
-resultsDiv.style.overflowY = 'auto';
-resultsDiv.style.border = '1px solid #ddd';
-resultsDiv.style.borderRadius = '4px';
-resultsDiv.style.display = 'none';
+    inputs.forEach(inputId => {
+        const input = document.querySelector(inputId);
+        if (!input) return;
 
-inputElement.addEventListener('input', function () {
-clearTimeout(timeout);
-const query = this.value;
+        const autocompleteContainer = document.createElement('div');
+        autocompleteContainer.classList.add('autocomplete-items');
+        input.parentNode.appendChild(autocompleteContainer);
 
-if (query.length < 3) {
-resultsDiv.style.display = 'none';
-return;
-}
+        input.addEventListener('input', debounce(async function(e) {
+            const value = this.value;
+            
+            if (!value) {
+                closeAllLists();
+                return;
+            }
 
-timeout = setTimeout(() => {
-fetch(`/api/address-search?q=${
-encodeURIComponent(query)
-}`).then(response => response.json()).then(data => {
-resultsDiv.innerHTML = '';
-data.forEach(item => {
-const div = document.createElement('div');
-div.className = 'autocomplete-item';
-div.textContent = item.label;
-div.style.padding = '8px';
-div.style.cursor = 'pointer';
-div.style.borderBottom = '1px solid #eee';
+            try {
+                const response = await fetch(`/api/address-search?q=${encodeURIComponent(value)}`);
+                const data = await response.json();
+                
+                closeAllLists();
+                currentFocus = -1;
 
-div.addEventListener('mouseover', () => {
-div.style.backgroundColor = '#f0f0f0';
+                data.forEach(item => {
+                    const div = document.createElement('div');
+                    div.classList.add('autocomplete-item');
+                    div.innerHTML = `${item.label}`;
+                    
+                    div.addEventListener('click', function(e) {
+                        input.value = item.value;
+                        closeAllLists();
+                    });
+                    
+                    autocompleteContainer.appendChild(div);
+                });
+            } catch (error) {
+                console.error('Erreur lors de la recherche:', error);
+            }
+        }, 300));
+
+        input.addEventListener('keydown', function(e) {
+            const items = autocompleteContainer.getElementsByTagName('div');
+            
+            if (e.keyCode === 40) { // Flèche bas
+                currentFocus++;
+                addActive(items);
+            } else if (e.keyCode === 38) { // Flèche haut
+                currentFocus--;
+                addActive(items);
+            } else if (e.keyCode === 13) { // Entrée
+                e.preventDefault();
+                if (currentFocus > -1 && items) {
+                    items[currentFocus].click();
+                }
+            }
+        });
+    });
+
+    function addActive(items) {
+        if (!items) return;
+        removeActive(items);
+        if (currentFocus >= items.length) currentFocus = 0;
+        if (currentFocus < 0) currentFocus = items.length - 1;
+        items[currentFocus].classList.add('active');
+    }
+
+    function removeActive(items) {
+        Array.from(items).forEach(item => {
+            item.classList.remove('active');
+        });
+    }
+
+    function closeAllLists() {
+        const items = document.getElementsByClassName('autocomplete-items');
+        Array.from(items).forEach(item => {
+            item.innerHTML = '';
+        });
+    }
+
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func.apply(this, args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+
+    document.addEventListener('click', function(e) {
+        closeAllLists();
+    });
 });
+document.addEventListener('DOMContentLoaded', function() {
+    const setupAutocomplete = (inputElement, postalCodeInput) => {
+        let timeout = null;
+        const resultsDiv = document.createElement('div');
+        const messageDiv = document.createElement('div');
+        
+        // Configuration des éléments UI
+        resultsDiv.className = 'autocomplete-results';
+        messageDiv.className = 'validation-message';
+        
+        // Styles pour le message de validation
+        messageDiv.style.fontSize = '0.8em';
+        messageDiv.style.marginTop = '4px';
+        messageDiv.style.display = 'none';
+        
+        inputElement.parentNode.appendChild(resultsDiv);
+        inputElement.parentNode.appendChild(messageDiv);
+        
+        // Style pour la div des résultats
+        resultsDiv.style.position = 'absolute';
+        resultsDiv.style.zIndex = '1000';
+        resultsDiv.style.backgroundColor = 'white';
+        resultsDiv.style.width = '100%';
+        resultsDiv.style.maxHeight = '300px';
+        resultsDiv.style.overflowY = 'auto';
+        resultsDiv.style.border = '1px solid #ddd';
+        resultsDiv.style.borderRadius = '4px';
+        resultsDiv.style.display = 'none';
+        resultsDiv.style.top = '100%';
+        
+        // Validation indicator
+        const validationIndicator = document.createElement('div');
+        validationIndicator.className = 'validation-indicator';
+        validationIndicator.style.position = 'absolute';
+        validationIndicator.style.right = '10px';
+        validationIndicator.style.top = '50%';
+        validationIndicator.style.transform = 'translateY(-50%)';
+        inputElement.parentNode.style.position = 'relative';
+        inputElement.parentNode.appendChild(validationIndicator);
 
-div.addEventListener('mouseout', () => {
-div.style.backgroundColor = 'white';
-});
+        const showMessage = (message, isError = false) => {
+            messageDiv.textContent = message;
+            messageDiv.style.display = 'block';
+            messageDiv.style.color = isError ? '#dc3545' : '#28a745';
+        };
 
-div.addEventListener('click', () => {
-inputElement.value = item.value;
-resultsDiv.style.display = 'none';
-});
+        const hideMessage = () => {
+            messageDiv.style.display = 'none';
+        };
 
-resultsDiv.appendChild(div);
-});
+        const setValidationState = (isValid, message = '') => {
+            if (isValid) {
+                validationIndicator.innerHTML = '✓';
+                validationIndicator.style.color = '#28a745';
+                inputElement.style.borderColor = '#28a745';
+                if (message) showMessage(message);
+            } else {
+                validationIndicator.innerHTML = '⚠';
+                validationIndicator.style.color = '#dc3545';
+                inputElement.style.borderColor = '#dc3545';
+                if (message) showMessage(message, true);
+            }
+        };
 
-if (data.length > 0) {
-resultsDiv.style.display = 'block';
-}
-}).catch(error => {
-console.error('Erreur:', error);
-});
-}, 300);
-});
+        inputElement.addEventListener('input', function() {
+            clearTimeout(timeout);
+            postalCodeInput.value = '';
+            validationIndicator.innerHTML = '';
+            inputElement.style.borderColor = '';
+            hideMessage();
+            
+            const query = this.value;
 
-// Cacher les résultats quand on clique ailleurs
-document.addEventListener('click', function (e) {
-if (!inputElement.contains(e.target) && ! resultsDiv.contains(e.target)) {
-resultsDiv.style.display = 'none';
-}
-});
-};
+            if (query.length < 2) {
+                resultsDiv.style.display = 'none';
+                showMessage('Veuillez saisir au moins 2 caractères', true);
+                return;
+            }
 
-// Initialiser l'autocomplétion pour les champs de lieu
-setupAutocomplete(document.querySelector('[name="search_covoiturage[lieuDepart]"]'));
-setupAutocomplete(document.querySelector('[name="search_covoiturage[lieuArrivee]"]'));
+            timeout = setTimeout(() => {
+                resultsDiv.innerHTML = '<div class="p-2">Recherche en cours...</div>';
+                resultsDiv.style.display = 'block';
+
+                fetch(`/api/address-search?q=${encodeURIComponent(query)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        resultsDiv.innerHTML = '';
+                        
+                        if (data.length === 0) {
+                            resultsDiv.innerHTML = '<div class="p-2 text-muted">Aucune ville trouvée</div>';
+                            setValidationState(false, 'Aucune ville française trouvée');
+                            return;
+                        }
+
+                        data.forEach(item => {
+                            const div = document.createElement('div');
+                            div.className = 'autocomplete-item';
+                            div.textContent = item.label;
+                            
+                            div.addEventListener('click', () => {
+                                inputElement.value = item.value;
+                                postalCodeInput.value = item.postcode;
+                                resultsDiv.style.display = 'none';
+                                setValidationState(true, `Ville sélectionnée: ${item.value} (${item.postcode})`);
+                            });
+                            
+                            resultsDiv.appendChild(div);
+                        });
+                        
+                        resultsDiv.style.display = 'block';
+                    })
+                    .catch(error => {
+                        setValidationState(false, 'Erreur lors de la recherche');
+                        console.error('Erreur:', error);
+                    });
+            }, 300);
+        });
+
+        // Fermer les résultats quand on clique ailleurs
+        document.addEventListener('click', function(e) {
+            if (!inputElement.contains(e.target) && !resultsDiv.contains(e.target)) {
+                resultsDiv.style.display = 'none';
+            }
+        });
+
+        // Validation à la soumission
+        inputElement.closest('form').addEventListener('submit', function(e) {
+            if (!postalCodeInput.value) {
+                e.preventDefault();
+                setValidationState(false, 'Veuillez sélectionner une ville dans la liste');
+            }
+        });
+    };
+
+    // Initialisation
+    const departInput = document.querySelector('[name="search_covoiturage[lieuDepart]"]');
+    const departCodeInput = document.querySelector('[name="search_covoiturage[codeDepartPostal]"]');
+    const arriveeInput = document.querySelector('[name="search_covoiturage[lieuArrivee]"]');
+    const arriveeCodeInput = document.querySelector('[name="search_covoiturage[codeArriveePostal]"]');
+
+    setupAutocomplete(departInput, departCodeInput);
+    setupAutocomplete(arriveeInput, arriveeCodeInput);
 });
-			</script>
+</script>
 		</body>
 	</html>

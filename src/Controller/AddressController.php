@@ -21,8 +21,7 @@ class AddressController extends AbstractController
     public function searchAddress(Request $request): JsonResponse
     {
         $query = $request->query->get('q');
-        $type = 'municipality'; // Pour ne retourner que les villes
-
+        
         try {
             $response = $this->httpClient->request(
                 'GET',
@@ -30,25 +29,42 @@ class AddressController extends AbstractController
                 [
                     'query' => [
                         'q' => $query,
-                        'type' => $type,
-                        'limit' => 5
+                        'type' => 'municipality',
+                        'limit' => 8,
+                        'autocomplete' => 1
                     ]
                 ]
             );
 
             $data = json_decode($response->getContent(), true);
             
-            // Formatter les résultats
-            $suggestions = array_map(function($feature) {
-                return [
-                    'label' => $feature['properties']['city'],
-                    'value' => $feature['properties']['city'],
-                ];
-            }, $data['features']);
+            // Filtrer uniquement les villes françaises et formater les résultats
+            $suggestions = array_values(array_filter(array_map(function($feature) {
+                $properties = $feature['properties'];
+                // Vérifier que le citycode commence par un numéro de département français
+                if (preg_match('/^([0-9]{2}|2[AB]|97[1-6]|98[4-9]|99)/', $properties['citycode'])) {
+                    $context = isset($properties['context']) ? explode(', ', $properties['context'])[1] : '';
+                    return [
+                        'label' => sprintf('%s (%s) - %s', 
+                            $properties['city'],
+                            $properties['postcode'],
+                            $context
+                        ),
+                        'value' => $properties['city'],
+                        'postcode' => $properties['postcode'],
+                        'department' => $context,
+                        'coordinates' => $feature['geometry']['coordinates']
+                    ];
+                }
+                return null;
+            }, $data['features'])));
 
             return new JsonResponse($suggestions);
         } catch (\Exception $e) {
-            return new JsonResponse(['error' => 'Une erreur est survenue'], 500);
+            return new JsonResponse([
+                'error' => 'Une erreur est survenue lors de la recherche',
+                'details' => $e->getMessage()
+            ], 500);
         }
     }
 }
