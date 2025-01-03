@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: VoitureRepository::class)]
 class Voiture
@@ -23,6 +24,7 @@ class Voiture
     private ?string $immatriculation = null;
 
     #[ORM\Column(length: 50)]
+    #[Assert\Choice(choices: ['Électrique', 'Essence', 'Diesel', 'Autre'], message: 'Choisissez une énergie valide.')]
     private ?string $energie = null;
 
     #[ORM\Column(length: 50)]
