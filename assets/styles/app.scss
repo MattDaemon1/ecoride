@@ -1,5 +1,6 @@
 // Import Bootstrap
 @import "~bootstrap/scss/bootstrap";
+@import '~@fortawesome/fontawesome-free/css/all.min.css';
 
 // Variables personnalisées
 $primary-color: #198754; // Vert nature
@@ -193,7 +194,7 @@ h2 {
       margin-right: 5px;
     }
 
-    .btn-outline-primary {
+    .btn-outline-success {
       background-color: #2e7d32;
       color: white;
 

@@ -65,8 +65,8 @@
 							<div class="card">
 								<div class="card-body">
 									<div class="d-flex align-items-center mb-3">
-										{% if covoiturage.user.photo %}
-											<img src="{{ asset('uploads/photos/' ~ covoiturage.user.photo) }}" alt="Photo de {{ covoiturage.user.pseudo }}" class="rounded-circle me-3" width="50" height="50">
+										{% if covoiturage.user.imagename %}
+											<img src="{{ asset('images/users/' ~ covoiturage.user.imageName) }}" alt="Photo de {{ covoiturage.user.pseudo }}" class="rounded-circle me-3" width="50" height="50">
 										{% else %}
 											<div class="rounded-circle bg-secondary me-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
 												<i class="fas fa-user text-white"></i>
@@ -111,6 +111,9 @@
 									à
 									{{ covoiturage.heureDepart|date('H:i') }}
 								</p>
+								<p>
+								<span class="mx-2"><i class="fas fa-arrow-down"></i></span>
+								</p>
 								<p class="card-text">
 									<i class="fas fa-map-marker-alt text-success"></i>
 									{{ covoiturage.lieuArrivee }}
@@ -138,7 +141,7 @@
 										</span>
 									{% endif %}
 								</div>
-								<a href="{{ path('app_covoiturage_detail', {id: covoiturage.id}) }}" class="btn btn-outline-primary w-100">
+								<a href="{{ path('app_covoiturage_detail', {id: covoiturage.id}) }}" class="btn btn-outline-success w-100">
 									Voir les détails
 								</a>
 							</div>
