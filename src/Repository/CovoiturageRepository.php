@@ -69,6 +69,53 @@ class CovoiturageRepository extends ServiceEntityRepository
         ->getQuery()
         ->getOneOrNullResult();
 }
+
+public function findByFilterCriteria(array $criteria)
+{
+    $qb = $this->createQueryBuilder('c')
+        ->join('c.user', 'u')
+        ->join('c.voiture', 'v')
+        ->join('v.marque', 'm')
+        ->select('c', 'u', 'v', 'm');
+
+    if (!empty($criteria['lieuDepart'])) {
+        $qb->andWhere('c.lieuDepart = :lieuDepart')
+           ->setParameter('lieuDepart', $criteria['lieuDepart']);
+    }
+
+    if (!empty($criteria['lieuArrivee'])) {
+        $qb->andWhere('c.lieuArrivee = :lieuArrivee')
+           ->setParameter('lieuArrivee', $criteria['lieuArrivee']);
+    }
+
+    if (!empty($criteria['dateDepart'])) {
+        $qb->andWhere('c.dateDepart = :dateDepart')
+           ->setParameter('dateDepart', $criteria['dateDepart']);
+    }
+
+    if (!empty($criteria['prix'])) {
+        $qb->andWhere('c.prixPersonne <= :prix')
+           ->setParameter('prix', $criteria['prix']);
+    }
+
+    if (!empty($criteria['duree'])) {
+        $qb->andWhere('c.duree <= :duree')
+           ->setParameter('duree', $criteria['duree']);
+    }
+
+    if (!empty($criteria['ecologique'])) {
+        $qb->andWhere('v.energie = :energie')
+           ->setParameter('energie', 'électrique');
+    }
+
+    if (!empty($criteria['note'])) {
+        $qb->andWhere('(SELECT AVG(a.note) FROM App\\Entity\\Avis a WHERE a.user = c.user) >= :note')
+           ->setParameter('note', $criteria['note']);
+    }
+
+    return $qb->getQuery()->getResult();
+}
+
     
 
 }

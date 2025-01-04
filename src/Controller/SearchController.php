@@ -7,6 +7,7 @@ use App\Repository\CovoiturageRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
 class SearchController extends AbstractController
@@ -69,9 +70,26 @@ class SearchController extends AbstractController
         ]);
     }
 
+    #[Route('/search/filter', name: 'search_filter', methods: ['POST'])]
+    public function filter(Request $request, CovoiturageRepository $repository): JsonResponse
+    {
+        $filters = $request->request->all();
+        $criteria = [
+            'prix' => $filters['prixMax'] ?? null,
+            'duree' => $filters['dureeMax'] ?? null,
+            'ecologique' => $filters['ecologique'] ?? false,
+            'note' => $filters['noteMinimale'] ?? null,
+        ];
+
+        $results = $repository->findByFilterCriteria($criteria);
+
+        return $this->json($results);
+    }
+
+
 
     #[Route('/covoiturage_detail', name: 'app_covoiturage_detail')]
-    public function contact(): Response
+    public function covoiturage_detail(): Response
     {
         return $this->render('search/covoiturage_detail.html.twig', [
             'controller_name' => 'SearchController',
