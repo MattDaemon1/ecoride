@@ -1,0 +1,88 @@
+<div class="row">
+	{% for covoiturage in covoiturages %}
+		<div class="col-md-6 mb-4">
+			<div class="card">
+				<div class="card-body">
+					<div class="d-flex align-items-center mb-3">
+						{% if covoiturage.user.imagename %}
+							<img src="{{ asset('images/users/' ~ covoiturage.user.imageName) }}" alt="Photo de {{ covoiturage.user.pseudo }}" class="rounded-circle me-3" width="50" height="50">
+						{% else %}
+							<div class="rounded-circle bg-secondary me-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+								<i class="fas fa-user text-white"></i>
+							</div>
+						{% endif %}
+						<div>
+							<h5 class="card-title mb-0">{{ covoiturage.user.pseudo }}</h5>
+							<div class="text-warning">
+								{% set totalNote = 0 %}
+								{% set count = 0 %}
+								{% for avis in covoiturage.user.avis %}
+									{% if avis.note is not null %}
+										{% set totalNote = totalNote + avis.note|number_format(0, '', '') %}
+										{% set count = count + 1 %}
+									{% endif %}
+								{% endfor %}
+								{% if count > 0 %}
+									{% set averageNote = totalNote / count %}
+									{% for i in 1..5 %}
+										{% if i <= averageNote %}
+											<i class="fas fa-star"></i>
+										{% else %}
+											<i class="far fa-star"></i>
+										{% endif %}
+									{% endfor %}
+								{% else %}
+									<span>Aucune note disponible</span>
+								{% endif %}
+							</div>
+						</div>
+					</div>
+
+					<p class="card-text">
+						<strong>
+							<i class="fas fa-map-marker-alt text-primary"></i>
+							Départ :</strong>
+						{{ covoiturage.lieuDepart }}<br>
+						<i class="fas fa-calendar-alt"></i>
+						{{ covoiturage.dateDepart|date('d/m/Y') }}
+						à
+						{{ covoiturage.heureDepart|date('H:i') }}
+					</p>
+
+					<p class="card-text">
+						<strong>
+							<i class="fas fa-map-marker-alt text-success"></i>
+							Arrivée :</strong>
+						{{ covoiturage.lieuArrivee }}<br>
+						<i class="fas fa-calendar-alt"></i>
+						{{ covoiturage.dateArrivee|date('d/m/Y') }}
+						à
+						{{ covoiturage.heureArrivee|date('H:i') }}
+					</p>
+
+					<div class="d-flex justify-content-between align-items-center mb-3">
+						<span class="badge bg-info">
+							<i class="fas fa-users"></i>
+							{{ covoiturage.nbPlace }}
+							place(s)
+						</span>
+						<span class="badge bg-success">
+							<i class="fas fa-coins"></i>
+							{{ covoiturage.prixPersonne }}
+							€
+						</span>
+						{% if covoiturage.voiture.energie == 'Électrique' %}
+							<span class="badge bg-primary">
+								<i class="fas fa-leaf"></i>
+								Écologique
+							</span>
+						{% endif %}
+					</div>
+
+					<a href="{{ path('app_covoiturage_detail', {id: covoiturage.id}) }}" class="btn btn-outline-success w-100">Voir les détails</a>
+				</div>
+			</div>
+		</div>
+
+	{% endfor %}
+</div>

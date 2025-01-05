@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails du covoiturage{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1 class="mb-4">Détails du covoiturage</h1>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Trajet</h5>
+            <p><strong>Départ :</strong> {{ covoiturage.lieuDepart }} - {{ covoiturage.dateDepart|date('d/m/Y') }} à {{ covoiturage.heureDepart|date('H:i') }}</p>
+            <p><strong>Arrivée :</strong> {{ covoiturage.lieuArrivee }} - {{ covoiturage.dateArrivee|date('d/m/Y') }} à {{ covoiturage.heureArrivee|date('H:i') }}</p>
+            <hr>
+            <h5 class="card-title">Informations sur le conducteur</h5>
+            <p><strong>Conducteur :</strong> {{ covoiturage.user.pseudo }}</p>
+            <p><strong>Note :</strong> 
+                {% for i in 1..5 %}
+                    {% if i <= covoiturage.user.averageNote %}
+                        <i class="fas fa-star text-warning"></i>
+                    {% else %}
+                        <i class="far fa-star"></i>
+                    {% endif %}
+                {% endfor %}
+            </p>
+            <hr>
+            <h5 class="card-title">Détails du véhicule</h5>
+            <p><strong>Marque :</strong> {{ covoiturage.voiture.marque.nom }}</p>
+            <p><strong>Modèle :</strong> {{ covoiturage.voiture.modele }}</p>
+            <p><strong>Énergie :</strong> {{ covoiturage.voiture.energie }}</p>
+            {% if covoiturage.voiture.energie == 'Électrique' %}
+                <span class="badge bg-primary">Écologique</span>
+            {% endif %}
+            <hr>
+            <h5 class="card-title">Prix et places</h5>
+            <p><strong>Prix par personne :</strong> {{ covoiturage.prixPersonne }} €</p>
+            <p><strong>Places disponibles :</strong> {{ covoiturage.nbPlace }}</p>
+        </div>
+    </div>
+    <a href="{{ path('app_search') }}" class="btn btn-secondary mt-3">Retour à la recherche</a>
+</div>
+{% endblock %}
