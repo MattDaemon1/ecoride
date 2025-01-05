@@ -42,5 +42,22 @@ document.addEventListener('DOMContentLoaded', () => {
         // Réinitialiser les champs du formulaire
         filtersForm.reset();
 
-        // Réinitialiser les étoiles pour la note minimale
-        starRating.forEach(
+        // Réinitialiser les étoiles
+        starRating.forEach(star => {
+            star.classList.remove('fas');
+            star.classList.add('far');
+        });
+
+        // Recharger les résultats initiaux via AJAX
+        fetch('/search', {
+            method: 'GET',
+        })
+            .then(response => response.text())
+            .then(html => {
+                resultsContainer.innerHTML = html; // Mise à jour des résultats initiaux
+            })
+            .catch(error => {
+                console.error('Erreur lors du rechargement des résultats initiaux :', error);
+            });
+    });
+});
