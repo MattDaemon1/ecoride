@@ -86,6 +86,23 @@ class SearchController extends AbstractController
         return $this->json($results);
     }
 
+    public function results(Request $request, CovoiturageRepository $repository): Response
+{
+    $filters = [
+        'prixMax' => $request->query->get('prixMax'),
+        'dureeMax' => $request->query->get('dureeMax'),
+        'ecologique' => $request->query->get('ecologique'),
+        'noteMinimale' => $request->query->get('noteMinimale'),
+    ];
+
+    $covoiturages = $repository->findFilteredCovoiturages($filters);
+
+    return $this->render('_partials/_results.html.twig', [
+        'covoiturages' => $covoiturages,
+    ]);
+}
+
+
 
 
     #[Route('/covoiturage_detail', name: 'app_covoiturage_detail')]

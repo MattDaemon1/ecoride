@@ -155,36 +155,47 @@
 
 			<div class="col-md-3">
 				<div class="filters bg-light py-4 px-3 rounded shadow-sm">
-					<h5>Filtres</h5>
-					<form id="filters-form" class="row g-3 align-items-center">
-						<div class="col-md-12">
-							<label for="prixMax" class="form-label">Prix maximum (€)</label>
-							<input type="number" id="prixMax" name="prixMax" class="form-control">
+					<h5 class="mb-4">Filtres</h5>
+					<form
+						id="filters-form" class="row gy-3 align-items-center">
+						<!-- Prix Maximum -->
+						<div class="col-12">
+							<label for="prixMax" class="form-label fw-semibold">Prix maximum (€)</label>
+							<input type="number" id="prixMax" name="prixMax" class="form-control" placeholder="Entrez un montant">
 						</div>
-						<div class="col-md-12">
-							<label for="dureeMax" class="form-label">Durée maximale (minutes)</label>
-							<input type="number" id="dureeMax" name="dureeMax" class="form-control">
+
+						<!-- Durée Maximale -->
+						<div class="col-12">
+							<label for="dureeMax" class="form-label fw-semibold">Durée maximale (minutes)</label>
+							<input type="number" id="dureeMax" name="dureeMax" class="form-control" placeholder="Ex. 120">
 						</div>
-						<div class="form-check col-md-12">
+
+						<!-- Voyage écologique -->
+						<div class="form-check col-12">
 							<input type="checkbox" id="ecologique" name="ecologique" class="form-check-input">
-							<label for="ecologique" class="form-check-label">Voyage écologique</label>
+							<label for="ecologique" class="form-check-label fw-semibold">Voyage écologique</label>
 						</div>
-						<div class="col-md-12">
-							<label for="noteMinimale" class="form-label">Note</label>
-							<div class="star-rating">
+
+						<!-- Note minimale -->
+						<div class="col-12">
+							<label for="noteMinimale" class="form-label fw-semibold">Note</label>
+							<div class="star-rating d-flex gap-1">
 								{% for i in 1..5 %}
-									<i class="far fa-star" data-value="{{ i }}"></i>
+									<i class="far fa-star text-warning" data-value="{{ i }}" style="cursor: pointer;"></i>
 								{% endfor %}
 							</div>
 							<input type="hidden" id="noteMinimale" name="noteMinimale">
 						</div>
-						<div class="col-md-12">
-							<button type="button" id="apply-filters" class="btn btn-success w-100">Appliquer les filtres</button>
-							<button type="button" id="reset-filters" class="btn btn-secondary">Réinitialiser</button>
+
+						<!-- Boutons -->
+						<div class="col-12">
+							<button type="button" id="apply-filters" class="btn btn-success w-100 mb-2">Appliquer les filtres</button>
+							<button type="button" id="reset-filters" class="btn btn-outline-secondary w-100">Réinitialiser</button>
 						</div>
 					</form>
 				</div>
 			</div>
+
 		</div>
 
 		{% if upcomingCovoiturages is not empty %}

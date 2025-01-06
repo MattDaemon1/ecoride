@@ -8,6 +8,11 @@ search_route:
     path: /search
     controller: App\Controller\SearchController::index
 
+search_results:
+    path: /search/results
+    controller: App\Controller\SearchController::results
+    methods: GET
+
 mentions_legales:
     path: /mentions-legales
     controller: App\Controller\DefaultController::mentions

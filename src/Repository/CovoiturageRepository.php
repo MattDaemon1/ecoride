@@ -70,50 +70,83 @@ class CovoiturageRepository extends ServiceEntityRepository
         ->getOneOrNullResult();
 }
 
-public function findByFilterCriteria(array $criteria)
+public function findFilteredCovoiturages(array $filters): array
 {
-    $qb = $this->createQueryBuilder('c')
-        ->join('c.user', 'u')
-        ->join('c.voiture', 'v')
-        ->join('v.marque', 'm')
-        ->select('c', 'u', 'v', 'm');
+    $qb = $this->createQueryBuilder('c');
 
-    if (!empty($criteria['lieuDepart'])) {
+    // Recherche de base : lieu de départ, lieu d'arrivée, date de départ
+    if (!empty($filters['lieuDepart'])) {
         $qb->andWhere('c.lieuDepart = :lieuDepart')
-           ->setParameter('lieuDepart', $criteria['lieuDepart']);
+           ->setParameter('lieuDepart', $filters['lieuDepart']);
     }
 
-    if (!empty($criteria['lieuArrivee'])) {
+    if (!empty($filters['lieuArrivee'])) {
         $qb->andWhere('c.lieuArrivee = :lieuArrivee')
-           ->setParameter('lieuArrivee', $criteria['lieuArrivee']);
+           ->setParameter('lieuArrivee', $filters['lieuArrivee']);
     }
 
-    if (!empty($criteria['dateDepart'])) {
+    if (!empty($filters['dateDepart'])) {
         $qb->andWhere('c.dateDepart = :dateDepart')
-           ->setParameter('dateDepart', $criteria['dateDepart']);
+           ->setParameter('dateDepart', $filters['dateDepart']);
     }
 
-    if (!empty($criteria['prix'])) {
-        $qb->andWhere('c.prixPersonne <= :prix')
-           ->setParameter('prix', $criteria['prix']);
-    }
+    // Récupérer les résultats initiaux basés sur la recherche de base
+    $results = $qb->getQuery()->getResult();
 
-    if (!empty($criteria['duree'])) {
-        $qb->andWhere('c.duree <= :duree')
-           ->setParameter('duree', $criteria['duree']);
-    }
+    // Appliquer les filtres supplémentaires
+    $results = array_filter($results, function ($covoiturage) use ($filters) {
+        // Filtrer par prix maximum
+        if (!empty($filters['prixMax']) && $covoiturage->getPrixPersonne() > $filters['prixMax']) {
+            return false;
+        }
 
-    if (!empty($criteria['ecologique'])) {
-        $qb->andWhere('v.energie = :energie')
-           ->setParameter('energie', 'électrique');
-    }
+        // Filtrer par durée maximale
+        if (!empty($filters['dureeMax'])) {
+            $dateDepart = $covoiturage->getDateDepart();
+            $heureDepart = $covoiturage->getHeureDepart();
+            $dateArrivee = $covoiturage->getDateArrivee();
+            $heureArrivee = $covoiturage->getHeureArrivee();
 
-    if (!empty($criteria['note'])) {
-        $qb->andWhere('(SELECT AVG(a.note) FROM App\\Entity\\Avis a WHERE a.user = c.user) >= :note')
-           ->setParameter('note', $criteria['note']);
-    }
+            // Combiner date et heure pour créer des DateTime complètes
+            $dateTimeDepart = (clone $dateDepart)->setTime(
+                $heureDepart->format('H'),
+                $heureDepart->format('i')
+            );
+            $dateTimeArrivee = (clone $dateArrivee)->setTime(
+                $heureArrivee->format('H'),
+                $heureArrivee->format('i')
+            );
 
-    return $qb->getQuery()->getResult();
+            // Calculer la durée en minutes
+            $diffMinutes = ($dateTimeArrivee->getTimestamp() - $dateTimeDepart->getTimestamp()) / 60;
+
+            if ($diffMinutes > $filters['dureeMax']) {
+                return false;
+            }
+        }
+
+        // Filtrer par voyage écologique
+        if (!empty($filters['ecologique']) && $covoiturage->getVoiture()->getEnergie() !== 'Électrique') {
+            return false;
+        }
+
+        // Filtrer par note minimale
+        if (!empty($filters['noteMinimale'])) {
+            $notes = array_map(function ($avis) {
+                return $avis->getNote();
+            }, $covoiturage->getUser()->getAvis()->toArray());
+
+            $averageNote = !empty($notes) ? array_sum($notes) / count($notes) : 0;
+
+            if ($averageNote < $filters['noteMinimale']) {
+                return false;
+            }
+        }
+
+        return true; // Conserve les covoiturages qui passent tous les filtres
+    });
+
+    return $results;
 }
 
     
