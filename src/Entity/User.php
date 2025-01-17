@@ -94,6 +94,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Configuration::class, mappedBy: 'user')]
     private Collection $configurations;
 
+    #[ORM\Column(type: 'integer', options: ['default' => 20])]
+private int $credit = 20;
+
+
     public function __construct()
     {
         $this->avis = new ArrayCollection();
@@ -429,5 +433,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getImageSize(): ?int
     {
         return $this->imageSize;
+    }
+
+    public function getCredit(): ?int
+    {
+        return $this->credit;
+    }
+
+    public function setCredit(int $credit): static
+    {
+        $this->credit = $credit;
+
+        return $this;
     }
 }

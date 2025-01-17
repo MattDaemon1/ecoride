@@ -10,6 +10,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
+use phpDocumentor\Reflection\Types\Integer;
 use Vich\UploaderBundle\Form\Type\VichImageType; 
 
 class UserCrudController extends AbstractCrudController
@@ -29,7 +31,8 @@ class UserCrudController extends AbstractCrudController
         yield TextField::new('adresse'); 
         yield TextField::new('telephone'); 
         yield DateField::new('dateNaissance'); 
-        yield TextField::new('pseudo'); 
+        yield TextField::new('pseudo');
+        yield IntegerField::new('credit'); 
         yield TextareaField::new('imageFile')
             ->setFormType(VichImageType::class)->hideOnIndex()
             ->setLabel('Image')
