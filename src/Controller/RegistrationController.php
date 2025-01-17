@@ -35,13 +35,17 @@ class RegistrationController extends AbstractController
             // Initialiser les crédits
             $user->setCredit(20);
 
+            // Attribution du rôle par défaut
+            $user->setRoles(['ROLE_USER']);
+
             // Persister l'utilisateur
             $entityManager->persist($user);
             $entityManager->flush();
 
-            // Rediriger vers une autre page
+            // Rediriger vers la page de connexion
+            $this->addFlash('success', 'Votre compte a été créé avec succès !');
             return $this->redirectToRoute('app_login');
-        }
+            }
 
         return $this->render('security/register.html.twig', [
             'registrationForm' => $form->createView(),
