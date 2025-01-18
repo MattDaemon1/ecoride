@@ -20,3 +20,5 @@ mentions_legales:
 activity_log_create:
     path: /create-log
     controller: App\Controller\ActivityLogController::createLog
+
+

@@ -26,12 +26,12 @@ class CovoiturageController extends AbstractController
         }
 
         // Vérification des places et crédits
-        if ($covoiturage->getNombrePlaces() <= 0) {
+        if ($covoiturage->getNbPlace() <= 0) {
             $this->addFlash('error', 'Plus de places disponibles pour ce trajet.');
             return $this->redirectToRoute('covoiturage_detail', ['id' => $id]);
         }
 
-        if ($user->getCredits() < $covoiturage->getPrix()) {
+        if ($user->getCredit() < $covoiturage->getPrixPersonne()) {
             $this->addFlash('error', 'Crédits insuffisants.');
             return $this->redirectToRoute('covoiturage_detail', ['id' => $id]);
         }
@@ -39,8 +39,8 @@ class CovoiturageController extends AbstractController
         // Double confirmation
         if ($request->isMethod('POST')) {
             // Mise à jour des données
-            $user->setCredits($user->getCredits() - $covoiturage->getPrix());
-            $covoiturage->setNombrePlaces($covoiturage->getNombrePlaces() - 1);
+            $user->setCredit($user->getCredit() - $covoiturage->getPrixPersonne());
+            $covoiturage->setNbPlace($covoiturage->getNbPlace() - 1);
 
             $entityManager->persist($user);
             $entityManager->persist($covoiturage);
@@ -63,6 +63,21 @@ class CovoiturageController extends AbstractController
             'controller_name' => 'CovoiturageController',
         ]);
     }
+
+    #[Route('/covoiturage/{id}', name: 'covoiturage_detail', methods: ['GET'])]
+public function detail(int $id, EntityManagerInterface $entityManager): Response
+{
+    $covoiturage = $entityManager->getRepository(Covoiturage::class)->find($id);
+
+    if (!$covoiturage) {
+        throw $this->createNotFoundException('Covoiturage non trouvé.');
+    }
+
+    return $this->render('covoiturage/detail.html.twig', [
+        'covoiturage' => $covoiturage,
+    ]);
+}
+
 }
 
 

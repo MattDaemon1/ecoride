@@ -51,22 +51,22 @@
 				</p>
 
 
-                <!-- Section Préférences Conducteur -->
-                {# <h5 class="card-title text-primary mt-3">Préférences du conducteur</h5>
-                <ul class="list-unstyled">
-                    <li>
-                        <i class="fas fa-smoking"></i>
-                        Fumeur :
-                        {{ covoiturage.user.preferences.fumeur ? 'Oui' : 'Non' }}</li>
-                    <li>
-                        <i class="fas fa-paw"></i>
-                        Animaux acceptés :
-                        {{ covoiturage.user.preferences.animaux ? 'Oui' : 'Non' }}</li>
-                    <li>
-                        <i class="fas fa-music"></i>
-                        Musique :
-                        {{ covoiturage.user.preferences.musique ? 'Oui' : 'Non' }}</li>
-                </ul> #}
+				<!-- Section Préférences Conducteur -->
+				{# <h5 class="card-title text-primary mt-3">Préférences du conducteur</h5>
+				                <ul class="list-unstyled">
+				                    <li>
+				                        <i class="fas fa-smoking"></i>
+				                        Fumeur :
+				                        {{ covoiturage.user.preferences.fumeur ? 'Oui' : 'Non' }}</li>
+				                    <li>
+				                        <i class="fas fa-paw"></i>
+				                        Animaux acceptés :
+				                        {{ covoiturage.user.preferences.animaux ? 'Oui' : 'Non' }}</li>
+				                    <li>
+				                        <i class="fas fa-music"></i>
+				                        Musique :
+				                        {{ covoiturage.user.preferences.musique ? 'Oui' : 'Non' }}</li>
+				                </ul> #}
 
 				<hr>
 
@@ -116,14 +116,29 @@
 					{{ covoiturage.prixPersonne }}
 					€</p>
 				<p>
+					<strong>Vos crédits :</strong>
+					{{ app.user.credit }}</p>
+				<p>
 					<strong>Places disponibles :</strong>
 					{{ covoiturage.nbPlace }}</p>
+
+
+				<!-- Bouton Réserver -->    
+                {% if covoiturage.nbPlace > 0 %}
+                    <div class="text-center mt-4">
+                        <a href="{{ path('covoiturage_participer', { id: covoiturage.id }) }}" class="btn btn-primary">Réserver</a>
+                    </div>
+                {% else %}
+                    <div class="alert alert-danger mt-4" role="alert">
+                        <strong>Plus de places disponibles pour ce covoiturage.</strong>
+                    </div>
+                {% endif %}
 			</div>
 		</div>
 
 		<!-- Bouton Retour -->
 		<div class="text-center mt-4">
-            <a href="{{ path('covoiturage_participer', { id: covoiturage.id }) }}" class="btn btn-primary">Participer</a>
+			
 
 			<a href="{{ path('app_search') }}" class="btn btn-secondary">Retour à la recherche</a>
 		</div>

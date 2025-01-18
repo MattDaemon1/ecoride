@@ -436,17 +436,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->imageSize;
     }
 
-    public function getCredit(): ?int
-    {
-        return $this->credit;
-    }
-
-    public function setCredit(int $credit): static
-    {
-        $this->credit = $credit;
-
-        return $this;
-    }
 
     public function getAverageNote(): ?float
 {
@@ -473,30 +462,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     return $totalNotes / $count; // Moyenne des notes
 }
 
+public function getCredit(): int
+{
+    return $this->credit;
+}
 
+public function setCredit(int $credit): self
+{
+    $this->credit = $credit;
+    return $this;
+}
 
-
-
-
-    public function setCredits(int $credits): self
-
-    {
-
-        $this->credit = $credits;
-
-        return $this;
-
-    }
-
-
-
-    public function getCredits(): int
-
-    {
-
-        return $this->credit;
-
-    }
 
 }
 

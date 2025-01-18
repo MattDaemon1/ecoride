@@ -154,7 +154,7 @@ class Covoiturage
         return $this->nbPlace;
     }
 
-    public function setNbPlace(int $nbPlace): static
+    public function setNbPlace(int $nbPlace): self
     {
         $this->nbPlace = $nbPlace;
 
@@ -227,14 +227,9 @@ class Covoiturage
         return $this;
     }
 
-    public function getNombrePlaces(): int
-{
-    return $this->nombrePlaces;
-}
+    public function __toString(): string
+    {
+        return $this->lieuDepart . ' -> ' . $this->lieuArrivee;
+    }
 
-public function setNombrePlaces(int $nombrePlaces): self
-{
-    $this->nombrePlaces = $nombrePlaces;
-    return $this;
-}
 }
