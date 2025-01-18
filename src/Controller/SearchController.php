@@ -105,11 +105,17 @@ class SearchController extends AbstractController
 
 
 
-    #[Route('/covoiturage_detail', name: 'app_covoiturage_detail')]
-    public function covoiturage_detail(): Response
-    {
-        return $this->render('search/covoiturage_detail.html.twig', [
-            'controller_name' => 'SearchController',
-        ]);
+#[Route('/covoiturage/{id}/detail', name: 'app_covoiturage_detail')]
+public function detail(int $id, CovoiturageRepository $repository): Response
+{
+    $covoiturage = $repository->find($id);
+    if (!$covoiturage) {
+        throw $this->createNotFoundException('Covoiturage introuvable.');
     }
+
+    return $this->render('covoiturage/detail.html.twig', [
+        'covoiturage' => $covoiturage,
+    ]);
+}
+
 }

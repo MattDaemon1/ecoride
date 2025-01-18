@@ -1,41 +1,129 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Détails du covoiturage{% endblock %}
+{% block title %}Détails du covoiturage
+{% endblock %}
 
 {% block body %}
-<div class="container mt-5">
-    <h1 class="mb-4">Détails du covoiturage</h1>
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">Trajet</h5>
-            <p><strong>Départ :</strong> {{ covoiturage.lieuDepart }} - {{ covoiturage.dateDepart|date('d/m/Y') }} à {{ covoiturage.heureDepart|date('H:i') }}</p>
-            <p><strong>Arrivée :</strong> {{ covoiturage.lieuArrivee }} - {{ covoiturage.dateArrivee|date('d/m/Y') }} à {{ covoiturage.heureArrivee|date('H:i') }}</p>
-            <hr>
-            <h5 class="card-title">Informations sur le conducteur</h5>
-            <p><strong>Conducteur :</strong> {{ covoiturage.user.pseudo }}</p>
-            <p><strong>Note :</strong> 
-                {% for i in 1..5 %}
-                    {% if i <= covoiturage.user.averageNote %}
-                        <i class="fas fa-star text-warning"></i>
-                    {% else %}
-                        <i class="far fa-star"></i>
-                    {% endif %}
-                {% endfor %}
-            </p>
-            <hr>
-            <h5 class="card-title">Détails du véhicule</h5>
-            <p><strong>Marque :</strong> {{ covoiturage.voiture.marque.nom }}</p>
-            <p><strong>Modèle :</strong> {{ covoiturage.voiture.modele }}</p>
-            <p><strong>Énergie :</strong> {{ covoiturage.voiture.energie }}</p>
-            {% if covoiturage.voiture.energie == 'Électrique' %}
-                <span class="badge bg-primary">Écologique</span>
-            {% endif %}
-            <hr>
-            <h5 class="card-title">Prix et places</h5>
-            <p><strong>Prix par personne :</strong> {{ covoiturage.prixPersonne }} €</p>
-            <p><strong>Places disponibles :</strong> {{ covoiturage.nbPlace }}</p>
-        </div>
-    </div>
-    <a href="{{ path('app_search') }}" class="btn btn-secondary mt-3">Retour à la recherche</a>
-</div>
+	<div class="container mt-5">
+		<h1 class="mb-4 text-center">Détails du covoiturage</h1>
+
+		<div class="card shadow-lg">
+			<div
+				class="card-body">
+				<!-- Section Trajet -->
+				<h5 class="card-title text-primary">Trajet</h5>
+				<p>
+					<strong>Départ :</strong>
+					{{ covoiturage.lieuDepart }}
+					-
+					{{ covoiturage.dateDepart|date('d/m/Y') }}
+					à
+					{{ covoiturage.heureDepart|date('H:i') }}</p>
+				<p>
+					<strong>Arrivée :</strong>
+					{{ covoiturage.lieuArrivee }}
+					-
+					{{ covoiturage.dateArrivee|date('d/m/Y') }}
+					à
+					{{ covoiturage.heureArrivee|date('H:i') }}</p>
+
+				<hr>
+
+				<!-- Section Informations Conducteur -->
+				<h5 class="card-title text-primary">Informations sur le conducteur</h5>
+				<p>
+					<strong>Conducteur :</strong>
+					{{ covoiturage.user.pseudo }}</p>
+				<p>
+					<strong>Note moyenne :</strong>
+					{% if covoiturage.user.averageNote is not null %}
+						{% for i in 1..5 %}
+							{% if i <= covoiturage.user.averageNote %}
+								<i class="fas fa-star text-warning"></i>
+							{% else %}
+								<i class="far fa-star"></i>
+							{% endif %}
+						{% endfor %}
+						({{ covoiturage.user.averageNote|number_format(1) }}/5)
+					{% else %}
+						<em>Aucune note disponible</em>
+					{% endif %}
+				</p>
+
+
+                <!-- Section Préférences Conducteur -->
+                {# <h5 class="card-title text-primary mt-3">Préférences du conducteur</h5>
+                <ul class="list-unstyled">
+                    <li>
+                        <i class="fas fa-smoking"></i>
+                        Fumeur :
+                        {{ covoiturage.user.preferences.fumeur ? 'Oui' : 'Non' }}</li>
+                    <li>
+                        <i class="fas fa-paw"></i>
+                        Animaux acceptés :
+                        {{ covoiturage.user.preferences.animaux ? 'Oui' : 'Non' }}</li>
+                    <li>
+                        <i class="fas fa-music"></i>
+                        Musique :
+                        {{ covoiturage.user.preferences.musique ? 'Oui' : 'Non' }}</li>
+                </ul> #}
+
+				<hr>
+
+				<!-- Section Véhicule -->
+				<h5 class="card-title text-primary">Détails du véhicule</h5>
+				<p>
+					<strong>Marque :</strong>
+					{{ covoiturage.voiture.marque }}</p>
+				<p>
+					<strong>Modèle :</strong>
+					{{ covoiturage.voiture.modele }}</p>
+				<p>
+					<strong>Énergie :</strong>
+					{{ covoiturage.voiture.energie }}</p>
+				{% if covoiturage.voiture.energie == 'Électrique' %}
+					<span class="badge bg-success">Écologique</span>
+				{% endif %}
+
+				<hr>
+
+				<!-- Section Avis -->
+				<h5 class="card-title text-primary">Avis des passagers</h5>
+				{% if covoiturage.user.avis is not empty %}
+					{% for avis in covoiturage.user.avis %}
+						<div class="card my-2">
+							<div class="card-body">
+								<p>
+									<strong>{{ avis.user.pseudo }}
+										:</strong>
+									{{ avis.commentaire }}</p>
+								<p>
+									<i class="fas fa-star text-warning"></i>
+									{{ avis.note }}/5</p>
+							</div>
+						</div>
+					{% endfor %}
+				{% else %}
+					<p>Aucun avis disponible pour ce conducteur.</p>
+				{% endif %}
+
+				<hr>
+
+				<!-- Section Prix et places -->
+				<h5 class="card-title text-primary">Prix et places</h5>
+				<p>
+					<strong>Prix par personne :</strong>
+					{{ covoiturage.prixPersonne }}
+					€</p>
+				<p>
+					<strong>Places disponibles :</strong>
+					{{ covoiturage.nbPlace }}</p>
+			</div>
+		</div>
+
+		<!-- Bouton Retour -->
+		<div class="text-center mt-4">
+			<a href="{{ path('app_search') }}" class="btn btn-secondary">Retour à la recherche</a>
+		</div>
+	</div>
 {% endblock %}

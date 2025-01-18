@@ -446,4 +446,30 @@ private int $credit = 20;
 
         return $this;
     }
+
+    public function getAverageNote(): ?float
+{
+    // Vérifie s'il y a des avis
+    if ($this->avis->isEmpty()) {
+        return null; // Pas d'avis, donc pas de moyenne
+    }
+
+    $totalNotes = 0;
+    $count = 0;
+
+    foreach ($this->avis as $avis) {
+        // Vérifie que la note est valide et numérique
+        if (is_numeric($avis->getNote())) {
+            $totalNotes += (float) $avis->getNote();
+            $count++;
+        }
+    }
+
+    if ($count === 0) {
+        return null; // Aucune note valide
+    }
+
+    return $totalNotes / $count; // Moyenne des notes
+}
+
 }

@@ -17,8 +17,8 @@ class Avis
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $commentaire = null;
 
-    #[ORM\Column(length: 50, nullable: true)]
-    private ?string $note = null;
+    #[ORM\Column(type: Types::FLOAT, nullable: true)]
+    private ?float $note = null;
 
     #[ORM\Column(length: 50, nullable: true)]
     private ?string $statut = null;
@@ -46,17 +46,17 @@ class Avis
         return $this;
     }
 
-    public function getNote(): ?string
-    {
-        return $this->note;
-    }
+    public function getNote(): ?float
+{
+    return $this->note;
+}
 
-    public function setNote(?string $note): static
-    {
-        $this->note = $note;
+public function setNote(?float $note): static
+{
+    $this->note = $note;
 
-        return $this;
-    }
+    return $this;
+}
 
     public function getStatut(): ?string
     {
