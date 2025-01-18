@@ -1,19 +1,46 @@
 <div class="container mt-5">
-    <div class="card">
-        <div class="card-header text-center">
-            <h1 class="h4">Confirmer votre participation</h1>
-        </div>
+    <h1 class="text-center mb-4">Détails du covoiturage</h1>
+
+    <div class="card shadow">
         <div class="card-body">
-            <p><strong>Trajet :</strong> {{ covoiturage.lieuDepart }} - {{ covoiturage.lieuArrivee }} </p>
+            <p><strong>Trajet :</strong> {{ covoiturage.lieuDepart }} - {{ covoiturage.lieuDepart }}</p>
+            <p><strong>Date :</strong> {{ covoiturage.dateDepart|date('d/m/Y H:i') }}</p>
             <p><strong>Prix en crédits :</strong> {{ covoiturage.prixPersonne }}</p>
             <p><strong>Places restantes :</strong> {{ covoiturage.nbPlace }}</p>
 
-            <form method="post">
-                <div class="d-flex justify-content-between">
+            <!-- Bouton pour ouvrir le modal -->
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirmationModal">
+                Participer
+            </button>
+
+            <!-- Bouton pour annuler -->
+            <a href="{{ path('covoiturage_detail', { id: covoiturage.id }) }}" class="btn btn-danger">
+                Annuler
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Bootstrap -->
+<div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmationModalLabel">Confirmer votre participation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Êtes-vous sûr de vouloir participer à ce covoiturage ?</p>
+                <p><strong>Trajet :</strong> {{ covoiturage.lieuDepart }} - {{ covoiturage.lieuDepart }}</p>
+                <p><strong>Prix en crédits :</strong> {{ covoiturage.prixPersonne }}</p>
+                <p><strong>Places restantes :</strong> {{ covoiturage.nbPlace }}</p>
+            </div>
+            <div class="modal-footer">
+                <form method="post">
                     <button type="submit" class="btn btn-success">Confirmer</button>
-                    <a href="{{ path('covoiturage_detail', { id: covoiturage.id }) }}" class="btn btn-secondary">Annuler</a>
-                </div>
-            </form>
+                </form>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+            </div>
         </div>
     </div>
 </div>

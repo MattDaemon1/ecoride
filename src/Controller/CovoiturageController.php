@@ -36,6 +36,11 @@ class CovoiturageController extends AbstractController
             return $this->redirectToRoute('covoiturage_detail', ['id' => $id]);
         }
 
+    // Ajoutez ici la logique pour confirmer la participation
+
+    $this->addFlash('success', 'Votre participation a été confirmée.');
+    return $this->redirectToRoute('covoiturage_detail', ['id' => $id]);
+
         // Double confirmation
         if ($request->isMethod('POST')) {
             // Mise à jour des données

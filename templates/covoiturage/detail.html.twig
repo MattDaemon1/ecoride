@@ -123,17 +123,18 @@
 					{{ covoiturage.nbPlace }}</p>
 
 
-				<!-- Bouton Réserver -->    
-                {% if covoiturage.nbPlace > 0 %}
-                    <div class="text-center mt-4">
-                        <a href="{{ path('covoiturage_participer', { id: covoiturage.id }) }}" class="btn btn-primary">Réserver</a>
-                    </div>
-                {% else %}
-                    <div class="alert alert-danger mt-4" role="alert">
-                        <strong>Plus de places disponibles pour ce covoiturage.</strong>
-                    </div>
-                {% endif %}
-			</div>
+				<div class="text-center mt-4">
+    {% if covoiturage.nbPlace > 0 %}
+        <!-- Bouton pour ouvrir le modal -->
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirmationModal">
+            Participer
+        </button>
+    {% else %}
+        <div class="alert alert-danger mt-4" role="alert">
+            <strong>Plus de places disponibles pour ce covoiturage.</strong>
+        </div>
+    {% endif %}
+</div>
 		</div>
 
 		<!-- Bouton Retour -->
@@ -143,4 +144,34 @@
 			<a href="{{ path('app_search') }}" class="btn btn-secondary">Retour à la recherche</a>
 		</div>
 	</div>
+
+    <!-- Modal Bootstrap -->
+<div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmationModalLabel">Confirmer votre participation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Êtes-vous sûr de vouloir participer à ce covoiturage ?</p>
+                <p><strong>Trajet :</strong> {{ covoiturage.lieuDepart }} - {{ covoiturage.lieuDepart }}</p>
+                <p><strong>Prix en crédits :</strong> {{ covoiturage.prixPersonne }}</p>
+                <p><strong>Places restantes :</strong> {{ covoiturage.nbPlace }}</p>
+            </div>
+            <div class="modal-footer">
+                <form method="post">
+                    <button type="submit" class="btn btn-success">Confirmer</button>
+                </form>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block javascripts %}
+    <script>
+        // Affiche le modal de confirmation
+        $('#confirmationModal').modal('show');
+    </script>
 {% endblock %}
