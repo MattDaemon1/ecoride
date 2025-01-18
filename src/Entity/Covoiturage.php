@@ -226,4 +226,15 @@ class Covoiturage
 
         return $this;
     }
+
+    public function getNombrePlaces(): int
+{
+    return $this->nombrePlaces;
+}
+
+public function setNombrePlaces(int $nombrePlaces): self
+{
+    $this->nombrePlaces = $nombrePlaces;
+    return $this;
+}
 }

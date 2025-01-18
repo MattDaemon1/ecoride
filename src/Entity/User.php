@@ -95,7 +95,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $configurations;
 
     #[ORM\Column(type: 'integer', options: ['default' => 20])]
-private int $credit = 20;
+    private int $credit = 20;
+
 
 
     public function __construct()
@@ -472,4 +473,31 @@ private int $credit = 20;
     return $totalNotes / $count; // Moyenne des notes
 }
 
+
+
+
+
+
+    public function setCredits(int $credits): self
+
+    {
+
+        $this->credit = $credits;
+
+        return $this;
+
+    }
+
+
+
+    public function getCredits(): int
+
+    {
+
+        return $this->credit;
+
+    }
+
 }
+
+

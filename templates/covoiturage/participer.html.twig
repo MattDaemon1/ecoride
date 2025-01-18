@@ -1,0 +1,9 @@
+<h1>Confirmer votre participation</h1>
+<p>Trajet : {{ covoiturage.titre }}</p>
+<p>Prix en crédits : {{ covoiturage.prixPersonne }}</p>
+<p>Places restantes : {{ covoiturage.nombrePlaces }}</p>
+
+<form method="post">
+    <button type="submit">Confirmer</button>
+    <a href="{{ path('covoiturage_detail', { id: covoiturage.id }) }}">Annuler</a>
+</form>
