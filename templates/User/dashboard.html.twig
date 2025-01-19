@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon tableau de bord{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Bienvenue, {{ app.user.pseudo }}</h1>
+
+    <!-- Section des rôles -->
+    <div class="card shadow-lg mb-4">
+        <div class="card-header bg-primary text-white text-center">
+            <h3>Choix du rôle</h3>
+        </div>
+        <div class="card-body">
+            <ul>
+                {% if 'chauffeur' in roles %}
+                    <li class="text-success">Chauffeur</li>
+                {% endif %}
+                {% if 'passager' in roles %}
+                    <li class="text-success">Passager</li>
+                {% endif %}
+            </ul>
+
+            {% if 'chauffeur' in roles %}
+                <h4>Formulaire pour chauffeur</h4>
+                {% if form is not null %}
+                    {{ form_start(form) }}
+                        {{ form_row(form.plaqueImmatriculation) }}
+                        <button type="submit" class="btn btn-primary mt-3">Soumettre</button>
+                    {{ form_end(form) }}
+                {% else %}
+                    <p>Aucun véhicule associé pour le moment.</p>
+                {% endif %}
+            {% else %}
+                <p>Vous êtes configuré comme passager. Aucun formulaire requis.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Section des informations -->
+    <div class="card shadow-lg mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Vos informations</h5>
+            <p><strong>Crédits disponibles :</strong> {{ app.user.credit }}</p>
+        </div>
+    </div>
+
+    <!-- Section des participations -->
+    <div class="card shadow-lg mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Vos participations</h5>
+            {% if app.user.covoiturages is not empty %}
+                <ul>
+                    {% for covoiturage in app.user.covoiturages %}
+                        <li>
+                            {{ covoiturage.lieuDepart }} => {{ covoiturage.lieuArrivee }} - {{ covoiturage.dateDepart|date('d/m/Y H:i') }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>Vous n'avez pas encore participé à un covoiturage.</p>
+            {% endif %}
+        </div>
+        <a href="{{ path('search_route') }}" class="btn btn-success w-100">Rechercher un covoiturage</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Configurer vos préférences
+{% endblock %}
+
+{% block body %}
+	<div class="container mt-5">
+		<h1 class="text-center mb-4">Configurer vos rôles</h1>
+
+		<form method="post">
+			<div class="mb-3">
+				<h3>Rôles</h3>
+				<div class="form-check">
+					<input type="checkbox" class="form-check-input" id="chauffeur" name="roles[]" value="chauffeur" {{ 'chauffeur' in roles ? 'checked' : '' }}>
+					<label class="form-check-label" for="chauffeur">Chauffeur</label>
+				</div>
+				<div class="form-check">
+					<input type="checkbox" class="form-check-input" id="passager" name="roles[]" value="passager" {{ 'passager' in roles ? 'checked' : '' }}>
+					<label class="form-check-label" for="passager">Passager</label>
+				</div>
+			</div>
+
+			<button type="submit" class="btn btn-primary">Enregistrer</button>
+		</form>
+	</div>
+
+
+	<div class="mb-3">
+		<h3>Vos préférences</h3>
+		<div class="form-check">
+			<input type="checkbox" class="form-check-input" name="preferences[]" value="fumeur" {{ 'fumeur' in configuration.parametres ? 'checked' : '' }}>
+			<label class="form-check-label" for="fumeur">Fumeur</label>
+		</div>
+		<div class="form-check">
+			<input type="checkbox" class="form-check-input" name="preferences[]" value="animaux" {{ 'animaux' in configuration.parametres ? 'checked' : '' }}>
+			<label class="form-check-label" for="animaux">Animaux acceptés</label>
+		</div>
+	</div>
+
+	<div class="mb-3">
+		<label for="custom_preferences" class="form-label">Préférences personnalisées</label>
+		<textarea name="custom_preferences" id="custom_preferences" class="form-control">{{ configuration.parametres['custom_preferences'] ?? '' }}</textarea>
+	</div>
+
+	<button type="submit" class="btn btn-primary">Enregistrer</button>
+</form></div>{% endblock %}
