@@ -21,8 +21,10 @@ class Configuration
     /**
      * @var Collection<int, Parametre>
      */
-    #[ORM\OneToMany(targetEntity: Parametre::class, mappedBy: 'configuration')]
-    private Collection $parametres;
+  
+    #[ORM\OneToMany(targetEntity: Parametre::class, mappedBy: 'configuration', cascade: ['persist', 'remove'])]
+private Collection $parametres;
+
 
     public function __construct()
     {
