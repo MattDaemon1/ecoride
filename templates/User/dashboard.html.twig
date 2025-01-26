@@ -10,8 +10,8 @@
 
 	<!-- Section des rôles -->
 	<div class="card shadow-lg mb-4">
-		<div class="card-header bg-primary text-white text-center">
-			<h3>Choix du rôle</h3>
+		<div class="card-header text-center">
+			<h2>Votre rôle</h2>
 		</div>
 		<div class="card-body">
 			<ul>
@@ -24,8 +24,8 @@
 			</ul>
 
 			<!-- Formulaire pour modifier les rôles -->
-			<div class="card-header bg-primary text-white text-center mt-4">
-				<h4>Modifier vos rôles</h4>
+			<div class="card-header text-center mt-4">
+				<h3>Modifier vos rôles</h3>
 			</div>
 			<div class="card-body">
 				<form method="post" action="{{ path('user_update_roles') }}">
@@ -41,70 +41,124 @@
 				</form>
 			</div>
 
-			{% if 'chauffeur' in roles %}
-				<h4 class="mt-4">Renseigner votre véhicule</h4>
+{% if 'chauffeur' in roles %}
+<div class="container my-5">
+    <h2 class="text-center mb-4">Renseigner votre véhicule</h2>
+    <p class="text-center text-muted">Veuillez fournir les informations nécessaires pour ajouter un véhicule à votre profil.</p>
+    <div class="card shadow-sm p-4">
+        {{ form_start(voitureType, {'attr': {'novalidate': 'novalidate'}}) }}
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                {{ form_row(voitureType.Immatriculation, { 
+                    'label': 'Plaque d\'immatriculation', 
+                    'attr': { 'class': 'form-control', 'placeholder': 'Ex : AB-123-CD' } 
+                }) }}
+            </div>
+            <div class="col-md-6 mb-3">
+                {{ form_row(voitureType.datePremiereImmatriculation, { 
+                    'label': 'Date de première immatriculation', 
+                    'attr': { 'class': 'form-control', 'placeholder': 'jj/mm/aaaa' } 
+                }) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                {{ form_row(voitureType.modele, { 
+                    'label': 'Modèle', 
+                    'attr': { 'class': 'form-control', 'placeholder': 'Ex : Clio' } 
+                }) }}
+            </div>
+            <div class="col-md-6 mb-3">
+                {{ form_row(voitureType.marque, { 
+                    'label': 'Marque', 
+                    'attr': { 'class': 'form-control', 'placeholder': 'Ex : Renault' } 
+                }) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                {{ form_row(voitureType.couleur, { 
+                    'label': 'Couleur', 
+                    'attr': { 'class': 'form-control', 'placeholder': 'Ex : Rouge' } 
+                }) }}
+            </div>
+            <div class="col-md-6 mb-3">
+                {{ form_row(voitureType.energie, { 
+                    'label': 'Énergie', 
+                    'attr': { 'class': 'form-control', 'placeholder': 'Ex : Électrique' } 
+                }) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col text-center">
+                <button type="submit" class="btn btn-success btn-lg w-50">Ajouter ce véhicule</button>
+            </div>
+        </div>
+        {{ form_end(voitureType) }}
+    </div>
+</div>
+{% endif %}
 
-				<!-- Afficher le formulaire de création de voiture -->
-				{{ form_start(voitureType) }}
-				{{ form_row(voitureType.Immatriculation, { 'label': 'Plaque d\'immatriculation' }) }}
-                {{ form_row(voitureType.datePremiereImmatriculation, { 'label': 'Date de première immatriculation' }) }}
-                {{ form_row(voitureType.modele, { 'label': 'Modèle' }) }}
-                {{ form_row(voitureType.marque, { 'label': 'Marque' }) }}
-                {{ form_row(voitureType.couleur, { 'label': 'Couleur' }) }}
-                {{ form_row(voitureType.energie, { 'label': 'Énergie' }) }}
-               
-                <button type="submit" class="btn btn-primary mt-3">Soumettre</button>
-            {{ form_end(voitureType) }}
-        {% endif %}
                         
                     
                      
                 
 
-                <!-- Liste des véhicules associés -->
-                <h4 class="mt-4">Vos véhicules</h4>
-                {% if app.user.voitures is not empty %}
-                    <ul>
-                        {% for voiture in app.user.voitures %}
-                            <li>
-                                {{ voiture.Immatriculation }} - {{ voiture.marque.libelle }} {{ voiture.modele }}
-                                <a href="{{ path('voiture_edit', { id: voiture.id }) }}" class="btn btn-warning btn-sm">Modifier</a>
-                                <a href="{{ path('voiture_delete', { id: voiture.id }) }}" class="btn btn-danger btn-sm" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce véhicule ?')">Supprimer</a>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                
-            {% else %}
-                <p>Vous êtes configuré comme passager. Aucun formulaire requis.</p>
-            {% endif %}
-        </div>
-    </div>
+               <!-- Liste des véhicules associés -->
+<div class="container my-5">
+    <h2 class="text-center mb-4 text-success">Vos véhicules</h2>
+    {% if app.user.voitures is not empty %}
+        <ul class="list-group">
+    {% for voiture in app.user.voitures %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <span>{{ voiture.Immatriculation }} - {{ voiture.marque.libelle }} {{ voiture.modele }}</span>
+            <div>
+                <a href="{{ path('voiture_edit', { id: voiture.id }) }}" class="btn btn-warning btn-sm">Modifier</a>
+                <form method="post" action="{{ path('voiture_delete', { id: voiture.id }) }}" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce véhicule ?');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ voiture.id) }}">
+                    <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
+                </form>
+            </div>
+        </li>
+    {% endfor %}
+</ul>
+    {% else %}
+        <p class="text-center text-muted">Vous êtes configuré comme passager. Aucun véhicule enregistré.</p>
+    {% endif %}
+</div>
 
-    <!-- Section des informations -->
-    <div class="card shadow-lg mb-4">
-        <div class="card-body">
-            <h5 class="card-title">Vos informations</h5>
-            <p><strong>Crédits disponibles :</strong> {{ app.user.credit }}</p>
-        </div>
+<!-- Section des informations -->
+<div class="card shadow-lg mb-4">
+    <div class="card-header text-center bg-light">
+        <h2 class="text-dark">Vos informations</h2>
     </div>
-
-    <!-- Section des participations -->
-    <div class="card shadow-lg mb-4">
-        <div class="card-body">
-            <h5 class="card-title">Vos participations</h5>
-            {% if app.user.covoiturages is not empty %}
-                <ul>
-                    {% for covoiturage in app.user.covoiturages %}
-                        <li>
-                            {{ covoiturage.lieuDepart }} => {{ covoiturage.lieuArrivee }} - {{ covoiturage.dateDepart|date('d/m/Y H:i') }}
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <p>Vous n'avez pas encore participé à un covoiturage.</p>
-            {% endif %}
-        </div>
-        <a href="{{ path('search_route') }}" class="btn btn-success w-100">Rechercher un covoiturage</a>
+    <div class="card-body">
+        <p class="text-center"><strong>Crédits disponibles :</strong> {{ app.user.credit }}</p>
     </div>
 </div>
+
+<!-- Section des participations -->
+<div class="card shadow-lg mb-4">
+    <div class="card-header text-center bg-light">
+        <h2 class="text-dark">Vos participations</h2>
+    </div>
+    <div class="card-body">
+        {% if app.user.covoiturages is not empty %}
+            <ul class="list-group">
+                {% for covoiturage in app.user.covoiturages %}
+                    <li class="list-group-item">
+                        {{ covoiturage.lieuDepart }} => {{ covoiturage.lieuArrivee }} - {{ covoiturage.dateDepart|date('d/m/Y H:i') }}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-center text-muted">Vous n'avez pas encore participé à un covoiturage.</p>
+        {% endif %}
+    </div>
+    <div class="card-footer text-center">
+        <a href="{{ path('search_route') }}" class="btn btn-success btn-lg w-50">Rechercher un covoiturage</a>
+    </div>
+</div>
+</div>
 {% endblock %}
+

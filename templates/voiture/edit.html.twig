@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier un véhicule{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+    <a href="{{ path('user_dashboard') }}" class="btn btn-secondary mb-3">Retour au tableau de bord</a>
+        <div class="card shadow-lg">
+            <div class="card-header bg-primary text-white text-center">
+                <h2 class="card-header text-center">Modifier votre véhicule</h2>
+            </div>
+            <div class="card-body">
+                {{ form_start(form) }}
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        {{ form_row(form.Immatriculation, {
+                            'label': 'Plaque d\'immatriculation',
+                            'attr': { 'class': 'form-control', 'placeholder': 'Ex : AB-123-CD' }
+                        }) }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        {{ form_row(form.datePremiereImmatriculation, {
+                            'label': 'Date de première immatriculation',
+                            'attr': { 'class': 'form-control', 'placeholder': 'jj/mm/aaaa' }
+                        }) }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        {{ form_row(form.modele, {
+                            'label': 'Modèle',
+                            'attr': { 'class': 'form-control', 'placeholder': 'Ex : Clio' }
+                        }) }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        {{ form_row(form.marque, {
+                            'label': 'Marque',
+                            'attr': { 'class': 'form-control', 'placeholder': 'Ex : Renault' }
+                        }) }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        {{ form_row(form.couleur, {
+                            'label': 'Couleur',
+                            'attr': { 'class': 'form-control', 'placeholder': 'Ex : Rouge' }
+                        }) }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        {{ form_row(form.energie, {
+                            'label': 'Énergie',
+                            'attr': { 'class': 'form-control', 'placeholder': 'Ex : Électrique' }
+                        }) }}
+                    </div>
+                </div>
+                <div class="text-center">
+                    <button class="btn btn-success btn-lg mt-3 w-50">Enregistrer les modifications</button>
+                </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+

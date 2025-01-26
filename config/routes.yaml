@@ -63,10 +63,6 @@ voiture_edit:
 voiture_delete:
     path: /voiture/{id}/delete
     controller: App\Controller\VoitureController::delete
-    methods: POST
-    requirements:
-        id: \d+
-    defaults:
-        _role: ROLE_CHAUFFEUR
+    methods: DELETE
 
 
