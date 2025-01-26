@@ -21,4 +21,52 @@ activity_log_create:
     path: /create-log
     controller: App\Controller\ActivityLogController::createLog
 
+user_dashboard:
+    path: /user/dashboard
+    controller: App\Controller\UserController::dashboard
+    methods: GET|POST
+    defaults:
+        _role: ROLE_USER # Middleware vérifie que l'utilisateur a ce rôle
+
+admin_dashboard:
+    path: /admin/dashboard
+    controller: App\Controller\AdminController::dashboard
+    methods: GET
+    defaults:
+        _role: ROLE_ADMIN
+
+employe_dashboard:
+    path: /employe/dashboard
+    controller: App\Controller\EmployeController::dashboard
+    methods: GET
+    defaults:
+        _role: ROLE_EMPLOYE
+
+# Routes pour la gestion des véhicules
+voiture_new:
+    path: /voiture/new
+    controller: App\Controller\VoitureController::new
+    methods: GET|POST
+    defaults:
+        _role: ROLE_CHAUFFEUR # Accessible uniquement aux chauffeurs
+    
+
+voiture_edit:
+    path: /voiture/{id}/edit
+    controller: App\Controller\VoitureController::edit
+    methods: GET|POST
+    requirements:
+        id: \d+
+    defaults:
+        _role: ROLE_CHAUFFEUR
+
+voiture_delete:
+    path: /voiture/{id}/delete
+    controller: App\Controller\VoitureController::delete
+    methods: POST
+    requirements:
+        id: \d+
+    defaults:
+        _role: ROLE_CHAUFFEUR
+
 

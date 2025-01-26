@@ -1,56 +1,79 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Mon tableau de bord{% endblock %}
+{% block title %}Mon tableau de bord
+{% endblock %}
 
 {% block body %}
 <div class="container mt-5">
-    <h1 class="text-center mb-4">Bienvenue, {{ app.user.pseudo }}</h1>
+	<h1 class="text-center mb-4">Bienvenue,
+		{{ app.user.pseudo }}</h1>
 
-    <!-- Section des rôles -->
-    <div class="card shadow-lg mb-4">
-        <div class="card-header bg-primary text-white text-center">
-            <h3>Choix du rôle</h3>
-        </div>
-        <div class="card-body">
-            <ul>
-                {% if 'chauffeur' in roles %}
-                    <li class="text-success">Chauffeur</li>
-                {% endif %}
-                {% if 'passager' in roles %}
-                    <li class="text-success">Passager</li>
-                {% endif %}
-            </ul>
+	<!-- Section des rôles -->
+	<div class="card shadow-lg mb-4">
+		<div class="card-header bg-primary text-white text-center">
+			<h3>Choix du rôle</h3>
+		</div>
+		<div class="card-body">
+			<ul>
+				{% if 'chauffeur' in roles %}
+					<li class="text-success">Chauffeur</li>
+				{% endif %}
+				{% if 'passager' in roles %}
+					<li class="text-success">Passager</li>
+				{% endif %}
+			</ul>
 
-            <!-- Formulaire pour modifier les rôles -->
-            <div class="card-header bg-primary text-white text-center mt-4">
-                <h4>Modifier vos rôles</h4>
-            </div>
-            <div class="card-body">
-                <form method="post" action="{{ path('user_update_roles') }}">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="role_chauffeur" name="roles[]" value="chauffeur"
-                               {% if 'chauffeur' in roles %}checked{% endif %}>
-                        <label class="form-check-label" for="role_chauffeur">Chauffeur</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="role_passager" name="roles[]" value="passager"
-                               {% if 'passager' in roles %}checked{% endif %}>
-                        <label class="form-check-label" for="role_passager">Passager</label>
-                    </div>
-                    <button type="submit" class="btn btn-success mt-3">Enregistrer les modifications</button>
-                </form>
-            </div>
+			<!-- Formulaire pour modifier les rôles -->
+			<div class="card-header bg-primary text-white text-center mt-4">
+				<h4>Modifier vos rôles</h4>
+			</div>
+			<div class="card-body">
+				<form method="post" action="{{ path('user_update_roles') }}">
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" id="role_chauffeur" name="roles[]" value="chauffeur" {% if 'chauffeur' in roles %} checked {% endif %}>
+						<label class="form-check-label" for="role_chauffeur">Chauffeur</label>
+					</div>
+					<div class="form-check">
+						<input class="form-check-input" type="checkbox" id="role_passager" name="roles[]" value="passager" {% if 'passager' in roles %} checked {% endif %}>
+						<label class="form-check-label" for="role_passager">Passager</label>
+					</div>
+					<button type="submit" class="btn btn-success mt-3">Enregistrer les modifications</button>
+				</form>
+			</div>
 
-            {% if 'chauffeur' in roles %}
-                <h4>Formulaire pour chauffeur</h4>
-                {% if form is not null %}
-                    {{ form_start(form) }}
-                        {{ form_row(form.plaqueImmatriculation) }}
-                        <button type="submit" class="btn btn-primary mt-3">Soumettre</button>
-                    {{ form_end(form) }}
-                {% else %}
-                    <p>Aucun véhicule associé pour le moment.</p>
-                {% endif %}
+			{% if 'chauffeur' in roles %}
+				<h4 class="mt-4">Renseigner votre véhicule</h4>
+
+				<!-- Afficher le formulaire de création de voiture -->
+				{{ form_start(voitureType) }}
+				{{ form_row(voitureType.Immatriculation, { 'label': 'Plaque d\'immatriculation' }) }}
+                {{ form_row(voitureType.datePremiereImmatriculation, { 'label': 'Date de première immatriculation' }) }}
+                {{ form_row(voitureType.modele, { 'label': 'Modèle' }) }}
+                {{ form_row(voitureType.marque, { 'label': 'Marque' }) }}
+                {{ form_row(voitureType.couleur, { 'label': 'Couleur' }) }}
+                {{ form_row(voitureType.energie, { 'label': 'Énergie' }) }}
+               
+                <button type="submit" class="btn btn-primary mt-3">Soumettre</button>
+            {{ form_end(voitureType) }}
+        {% endif %}
+                        
+                    
+                     
+                
+
+                <!-- Liste des véhicules associés -->
+                <h4 class="mt-4">Vos véhicules</h4>
+                {% if app.user.voitures is not empty %}
+                    <ul>
+                        {% for voiture in app.user.voitures %}
+                            <li>
+                                {{ voiture.Immatriculation }} - {{ voiture.marque.libelle }} {{ voiture.modele }}
+                                <a href="{{ path('voiture_edit', { id: voiture.id }) }}" class="btn btn-warning btn-sm">Modifier</a>
+                                <a href="{{ path('voiture_delete', { id: voiture.id }) }}" class="btn btn-danger btn-sm" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce véhicule ?')">Supprimer</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                
             {% else %}
                 <p>Vous êtes configuré comme passager. Aucun formulaire requis.</p>
             {% endif %}
