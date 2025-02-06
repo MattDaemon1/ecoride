@@ -1,0 +1,69 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}EcoRide{% endblock %}
+
+{% block body %}
+
+    <div class="container my-5">
+        <h2 class="text-center mb-4">Créer un covoiturage</h2>
+        <p class="text-center text-muted">Veuillez fournir les informations nécessaires pour ajouter un covoiturage à votre profil.</p>
+        
+        <div class="card shadow-sm p-4">
+            {{ form_start(covoiturageForm, {'attr': {'novalidate': 'novalidate'}}) }}
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    {{ form_row(covoiturageForm.dateDepart, { 'label': 'Date de départ', 'attr': { 'class': 'form-control', 'placeholder': 'Ex : 05/01/2025' } }) }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    {{ form_row(covoiturageForm.heureDepart, { 'label': 'Heure de Départ', 'attr': { 'class': 'form-control', 'placeholder': '22:00' } }) }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    {{ form_row(covoiturageForm.lieuDepart, { 'label': 'Lieu de départ', 'attr': { 'class': 'form-control', 'placeholder': 'Ex : Paris' } }) }}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    {{ form_row(covoiturageForm.dateArrivee, { 'label': 'Date d\'arrivée', 'attr': { 'class': 'form-control', 'placeholder': 'Ex : 05/01/2025' } }) }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    {{ form_row(covoiturageForm.heureArrivee, { 'label': 'Heure d\'arrivée', 'attr': { 'class': 'form-control', 'placeholder': '22:00' } }) }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    {{ form_row(covoiturageForm.lieuArrivee, { 'label': 'Lieu d\'arrivée', 'attr': { 'class': 'form-control', 'placeholder': 'Ex : Lyon' } }) }}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    {{ form_row(covoiturageForm.nbPlace, { 'label': 'Nombre de places', 'attr': { 'class': 'form-control', 'placeholder': 'Ex : 3' } }) }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    {{ form_row(covoiturageForm.prixPersonne, { 'label': 'Prix', 'attr': { 'class': 'form-control', 'placeholder': 'Ex : 10' } }) }}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    {{ form_row(covoiturageForm.voiture, { 'label': 'Véhicule', 'attr': { 'class': 'form-control' } }) }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    {{ form_row(covoiturageForm.user, { 'label': 'Chauffeur', 'attr': { 'class': 'form-control' } }) }}
+            </div>
+
+            <div class="row">
+                <div class="col text-center">
+                    <button type="submit" class="btn btn-success btn-lg w-50">Ajouter ce covoiturage</button>
+                </div>
+            </div>
+            
+            {{ form_end(covoiturageForm) }}
+        </div>
+
+        <div class="text-center mt-3">
+            <a href="{{ path('user_dashboard') }}" class="btn btn-secondary">Retour au tableau de bord</a>
+        </div>
+    </div>
+
+{% endblock %}

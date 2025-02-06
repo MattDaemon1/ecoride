@@ -2,17 +2,67 @@
 
 namespace App\Controller;
 
+use App\Entity\Covoiturage;
+use App\Form\CovoiturageType;
+use App\Entity\Configuration;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Annotation\Route;
 
-final class VoyageController extends AbstractController
+class VoyageController extends AbstractController
 {
-    #[Route('/voyage', name: 'app_voyage')]
-    public function index(): Response
+    #[Route('/voyage/new', name: 'saisir_un_voyage', methods: ['GET', 'POST'])]
+    public function saisirVoyage(Request $request, EntityManagerInterface $entityManager): Response
     {
-        return $this->render('voyage/index.html.twig', [
-            'controller_name' => 'VoyageController',
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        // Récupérer les rôles de l'utilisateur
+        $roles = $this->getUserRoles($entityManager, $user);
+
+        $covoiturage = new Covoiturage();
+        $form = $this->createForm(CovoiturageType::class, $covoiturage, [
+            'user' => $user, // Passage direct de l'utilisateur
+            'csrf_protection' => true,
         ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $covoiturage->setUser($user);
+            $entityManager->persist($covoiturage);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Le covoiturage a été ajouté avec succès.');
+            return $this->redirectToRoute('user_dashboard');
+        }
+
+        return $this->render('voyage/voyage.html.twig', [
+            'covoiturageForm' => $form->createView(),
+            'roles' => $roles,
+        ]);
+    }
+
+    /**
+     * Récupère les rôles de l'utilisateur à partir de la configuration.
+     */
+    private function getUserRoles(EntityManagerInterface $entityManager, $user): array
+    {
+        $configuration = $entityManager->getRepository(Configuration::class)->findOneBy(['user' => $user]);
+        $roles = [];
+
+        if ($configuration) {
+            foreach ($configuration->getParametres() as $parametre) {
+                if ($parametre->getValeur()) {
+                    $roles[] = $parametre->getPropriete();
+                }
+            }
+        }
+
+        return $roles;
     }
 }

@@ -7,12 +7,6 @@
 /var/
 /vendor/
 ###< symfony/framework-bundle ###
-
-###> phpunit/phpunit ###
-/phpunit.xml
-.phpunit.result.cache
-###< phpunit/phpunit ###
-
 ###> symfony/phpunit-bridge ###
 .phpunit.result.cache
 /phpunit.xml
@@ -24,3 +18,8 @@
 npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###
+
+###> phpunit/phpunit ###
+/phpunit.xml
+.phpunit.result.cache
+###< phpunit/phpunit ###

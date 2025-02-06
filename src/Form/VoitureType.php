@@ -19,7 +19,7 @@ class VoitureType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('Immatriculation', TextType::class, [
+            ->add('immatriculation', TextType::class, [
                 'label' => 'Plaque d\'immatriculation',
             ])
             ->add('datePremiereImmatriculation', DateType::class, [
@@ -51,10 +51,5 @@ class VoitureType extends AbstractType
          
     }
 
-    public function configureOptions(OptionsResolver $resolver): void
-    {
-        $resolver->setDefaults([
-            'data_class' => Voiture::class,
-        ]);
-    }
+    
 }

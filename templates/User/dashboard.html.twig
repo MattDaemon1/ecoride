@@ -46,16 +46,16 @@
     <h2 class="text-center mb-4">Renseigner votre véhicule</h2>
     <p class="text-center text-muted">Veuillez fournir les informations nécessaires pour ajouter un véhicule à votre profil.</p>
     <div class="card shadow-sm p-4">
-        {{ form_start(voitureType, {'attr': {'novalidate': 'novalidate'}}) }}
+        {{ form_start(voitureForm, {'attr': {'novalidate': 'novalidate'}}) }}
         <div class="row">
             <div class="col-md-6 mb-3">
-                {{ form_row(voitureType.Immatriculation, { 
+                {{ form_row(voitureForm.immatriculation, { 
                     'label': 'Plaque d\'immatriculation', 
                     'attr': { 'class': 'form-control', 'placeholder': 'Ex : AB-123-CD' } 
                 }) }}
             </div>
             <div class="col-md-6 mb-3">
-                {{ form_row(voitureType.datePremiereImmatriculation, { 
+                {{ form_row(voitureForm.datePremiereImmatriculation, { 
                     'label': 'Date de première immatriculation', 
                     'attr': { 'class': 'form-control', 'placeholder': 'jj/mm/aaaa' } 
                 }) }}
@@ -63,13 +63,13 @@
         </div>
         <div class="row">
             <div class="col-md-6 mb-3">
-                {{ form_row(voitureType.modele, { 
+                {{ form_row(voitureForm.modele, { 
                     'label': 'Modèle', 
                     'attr': { 'class': 'form-control', 'placeholder': 'Ex : Clio' } 
                 }) }}
             </div>
             <div class="col-md-6 mb-3">
-                {{ form_row(voitureType.marque, { 
+                {{ form_row(voitureForm.marque, { 
                     'label': 'Marque', 
                     'attr': { 'class': 'form-control', 'placeholder': 'Ex : Renault' } 
                 }) }}
@@ -77,13 +77,13 @@
         </div>
         <div class="row">
             <div class="col-md-6 mb-3">
-                {{ form_row(voitureType.couleur, { 
+                {{ form_row(voitureForm.couleur, { 
                     'label': 'Couleur', 
                     'attr': { 'class': 'form-control', 'placeholder': 'Ex : Rouge' } 
                 }) }}
             </div>
             <div class="col-md-6 mb-3">
-                {{ form_row(voitureType.energie, { 
+                {{ form_row(voitureForm.energie, { 
                     'label': 'Énergie', 
                     'attr': { 'class': 'form-control', 'placeholder': 'Ex : Électrique' } 
                 }) }}
@@ -94,9 +94,18 @@
                 <button type="submit" class="btn btn-success btn-lg w-50">Ajouter ce véhicule</button>
             </div>
         </div>
-        {{ form_end(voitureType) }}
+        {{ form_end(voitureForm) }}
     </div>
+<div class="col-md-6 mb-3">
+    <a href="{{ path('saisir_un_voyage') }}" class="btn btn-primary btn-lg">
+            Saisir un voyage
+        </a>
 </div>
+</div>
+
+{% endif %}
+
+{% if 'passager' in roles %}
 {% endif %}
 
                         

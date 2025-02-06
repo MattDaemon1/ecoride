@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CovoiturageRepository::class)]
 class Covoiturage
@@ -35,6 +36,7 @@ class Covoiturage
     private ?string $lieuArrivee = null;
 
     #[ORM\Column(length: 50)]
+    #[Assert\Choice(choices: ['En attente', 'En cours', 'Terminé'], message: 'Choisissez un statut.')]
     private ?string $statut = null;
 
     #[ORM\Column]
