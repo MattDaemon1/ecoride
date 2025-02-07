@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Covoiturage;
+use App\Entity\Voiture;
 use App\Form\CovoiturageType;
 use App\Entity\Configuration;
 use Doctrine\ORM\EntityManagerInterface;
@@ -21,12 +22,17 @@ class VoyageController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-        // Récupérer les rôles de l'utilisateur
+        // ✅ Récupérer les rôles de l'utilisateur
         $roles = $this->getUserRoles($entityManager, $user);
+        
 
+        // ✅ Récupérer les voitures de l'utilisateur connecté
+        $voitures = $entityManager->getRepository(Voiture::class)->findBy(['user' => $user]);
+
+        // ✅ Création du formulaire avec les voitures filtrées
         $covoiturage = new Covoiturage();
         $form = $this->createForm(CovoiturageType::class, $covoiturage, [
-            'user' => $user, // Passage direct de l'utilisateur
+            'user' => $user,
             'csrf_protection' => true,
         ]);
 
@@ -44,6 +50,7 @@ class VoyageController extends AbstractController
         return $this->render('voyage/voyage.html.twig', [
             'covoiturageForm' => $form->createView(),
             'roles' => $roles,
+            'voitures' => $voitures, // ✅ Passage des voitures à la vue
         ]);
     }
 

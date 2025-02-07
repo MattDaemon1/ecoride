@@ -60,8 +60,14 @@ class CovoiturageType extends AbstractType
             ])
             ->add('voiture', EntityType::class, [
                 'class' => Voiture::class,
-                'choice_label' => 'immatriculation', // Ce qui est affiché
-                'choice_value' => 'id', // Utilise l'ID comme valeur des options
+                'label' => 'Véhicule',
+                'choice_label' => 'immatriculation', // Afficher l'immatriculation comme label
+                'query_builder' => function (EntityRepository $er) use ($options) {
+                    $user = $options['user'];
+                    return $er->createQueryBuilder('v')
+                        ->where('v.user = :user')
+                        ->setParameter('user', $user);
+                },
                 'placeholder' => 'Sélectionnez un véhicule',
                 'required' => true,
             ]);
