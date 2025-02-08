@@ -47,7 +47,7 @@ class VoyageController extends AbstractController
             return $this->redirectToRoute('user_dashboard');
         }
 
-        return $this->render('voyage/voyage.html.twig', [
+        return $this->render('covoiturage/voyage.html.twig', [
             'covoiturageForm' => $form->createView(),
             'roles' => $roles,
             'voitures' => $voitures, // ✅ Passage des voitures à la vue
