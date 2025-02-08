@@ -19,9 +19,12 @@ use App\Form\VoitureType;
 class UserController extends AbstractController
 {
     #[Route('/user/dashboard', name: 'user_dashboard', methods: ['GET', 'POST'])]
-    public function dashboard(Request $request, EntityManagerInterface $entityManager, VoitureType $voitureType, CovoiturageType $covoiturageType): Response
+    public function dashboard(Request $request, EntityManagerInterface $entityManager): Response
     {
         $user = $this->getUser();
+
+        
+        
 
         if (!$user) {
             // Handle the case where the user is not authenticated
@@ -40,11 +43,11 @@ class UserController extends AbstractController
             }
         }
 
-        // Gestion du formulaire pour les chauffeurs
-    $form = null;
+    // Gestion du formulaire pour les chauffeurs
     if (in_array('chauffeur', $roles)) {
 // Formulaire pour ajouter un véhicule
 $voiture = new Voiture();
+$voiture->setUser($this->getUser());
 $voitureForm = $this->createForm(VoitureType::class, $voiture, [
     'csrf_protection' => true,
 ]);
@@ -66,6 +69,7 @@ if ($voitureForm->isSubmitted() && $voitureForm->isValid()) {
         $entityManager->persist($voiture);
         $entityManager->flush();
         $this->addFlash('success', 'Le véhicule a été ajouté avec succès.');
+        return $this->redirectToRoute('user_dashboard');  // Ajout de la redirection
     } catch (\Exception $e) {
         $this->addFlash('error', 'Une erreur est survenue lors de l\'ajout du véhicule.');
     }
@@ -138,4 +142,31 @@ return $this->render('user/dashboard.html.twig', [
         $this->addFlash('success', 'Vos rôles ont été mis à jour.');
         return $this->redirectToRoute('user_dashboard');
     }
+
+    #[Route('/voiture/new', name: 'voiture_new', methods: ['GET', 'POST'])]
+public function new(Request $request, EntityManagerInterface $entityManager): Response
+{
+    $user = $this->getUser ();
+    
+    if (!$user) {
+        return $this->redirectToRoute('app_login');
+    }
+
+    $voiture = new Voiture();
+    $form = $this->createForm(VoitureType::class, $voiture);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+        $voiture->setUser ($user); // Lier la voiture à l'utilisateur connecté
+        $entityManager->persist($voiture);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Le véhicule a été ajouté avec succès.');
+        return $this->redirectToRoute('user_dashboard');
+    }
+
+    return $this->render('voiture/new.html.twig', [
+        'voitureForm' => $form->createView(),
+    ]);
+}
 }

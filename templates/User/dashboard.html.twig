@@ -93,17 +93,17 @@
                                 <div class="btn-group">
                                     <a href="{{ path('covoiturages_edit', { id: covoiturage.id }) }}" class="btn btn-warning btn-sm">Modifier</a>
 
-                                    <form method="post" action="{{ path('covoiturages_delete', { id: covoiturage.id }) }}" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce voyage ?');">
-                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ covoiturage.id) }}">
-                                        <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
-                                    </form>
+                                    <form method="post" action="{{ path('covoiturages_delete', { id: covoiturage.id }) }}" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce covoiturage ?');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ covoiturage.id) }}">
+                                    <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
+                                </form>
                                 </div>
                             </li>
-                            <div class="col text-center">
-                            <a href="{{ path('saisir_un_voyage') }}" class="btn btn-success btn-lg w-50">Saisir un voyage</a>
-                            </div>
                         {% endfor %}
                     </ul>
+                    <div class="col text-center">
+                            <a href="{{ path('saisir_un_voyage') }}" class="btn btn-success btn-lg w-50">Saisir un voyage</a>
+                            </div>
                 {% else %}
                     <p class="text-center text-muted">Vous n'avez aucun voyage enregistré.</p>
                 {% endif %}
@@ -121,10 +121,11 @@
                         <span>{{ voiture.immatriculation }} - {{ voiture.marque.libelle }} {{ voiture.modele }}</span>
                         <div class="btn-group">
                             <a href="{{ path('voiture_edit', { id: voiture.id }) }}" class="btn btn-warning btn-sm">Modifier</a>
-                            <form method="post" action="{{ path('voiture_delete', { id: voiture.id }) }}" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce véhicule ?');">
-                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ voiture.id) }}">
-                                <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
-                            </form>
+<form method="post" action="{{ path('voiture_delete', {'id': voiture.id}) }}" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce véhicule ?');">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ voiture.id) }}">
+    <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
+</form>
+
                         </div>
                     </li>
                 {% endfor %}

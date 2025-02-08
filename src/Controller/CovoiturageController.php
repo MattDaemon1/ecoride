@@ -169,17 +169,18 @@ public function edit(Request $request, EntityManagerInterface $entityManager, in
     ]);
 }
 
+#[Route('/covoiturage/delete/{id}', name: 'covoiturages_delete', methods: ['POST'])]
+public function delete(Request $request, Covoiturage $covoiturage, EntityManagerInterface $entityManager): Response
+{
+    if ($this->isCsrfTokenValid('delete' . $covoiturage->getId(), $request->request->get('_token'))) {
+        $entityManager->remove($covoiturage);
+        $entityManager->flush();
 
-    #[Route('/{id}', name: 'covoiturages_delete', methods: ['POST'])]
-    public function delete(Request $request, Covoiturage $covoiturage, EntityManagerInterface $entityManager): Response
-    {
-        if ($this->isCsrfTokenValid('delete'.$covoiturage->getId(), $request->request->get('_token'))) {
-            $entityManager->remove($covoiturage);
-            $entityManager->flush();
-        }
-
-        return $this->redirectToRoute('covoiturages_index');
+        $this->addFlash('success', 'Le covoiturage a été supprimé avec succès.');
     }
+
+    return $this->redirectToRoute('user_dashboard');
+}
 
 }
 

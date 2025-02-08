@@ -40,16 +40,17 @@ class VoitureType extends AbstractType
                     'Essence' => 'Essence',
                     'Diesel' => 'Diesel',
                     'Autre' => 'Autre',
-                    
                 ],
-                
-                
             ])
             ->add('couleur', TextType::class, [
                 'label' => 'Couleur',
             ]);
-         
     }
 
-    
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults([
+            'data_class' => Voiture::class,
+        ]);
+    }
 }

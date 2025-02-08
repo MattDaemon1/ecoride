@@ -31,20 +31,47 @@ class VoitureController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/delete', name: 'voiture_delete', methods: ['POST', 'DELETE'])]
+    #[Route('/{id}', name: 'voiture_delete', methods: ['POST'])]
 public function delete(Request $request, Voiture $voiture, EntityManagerInterface $entityManager): Response
 {
-    // Vérifier le token CSRF pour la sécurité
-    if ($this->isCsrfTokenValid('delete' . $voiture->getId(), $request->request->get('_token'))) {
+    if ($this->isCsrfTokenValid('delete'.$voiture->getId(), $request->request->get('_token'))) {
         $entityManager->remove($voiture);
         $entityManager->flush();
+        $this->addFlash('success', 'Véhicule supprimé avec succès');
+    }
 
-        // Redirection après la suppression
-        $this->addFlash('success', 'Le véhicule a été supprimé avec succès.');
+    return $this->redirectToRoute('user_dashboard');
+}
+
+
+
+#[Route('/voiture/new', name: 'voiture_new', methods: ['GET', 'POST'])]
+public function new(Request $request, EntityManagerInterface $entityManager): Response
+{
+    $user = $this->getUser();
+    
+    if (!$user) {
+        return $this->redirectToRoute('app_login');
+    }
+
+    $voiture = new Voiture();
+    $form = $this->createForm(VoitureType::class, $voiture);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+        $voiture->setUser($user); // ✅ Lier la voiture à l'utilisateur connecté
+        $entityManager->persist($voiture);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Le véhicule a été ajouté avec succès.');
         return $this->redirectToRoute('user_dashboard');
     }
 
-    $this->addFlash('error', 'Action non autorisée.');
-    return $this->redirectToRoute('user_dashboard');
+    return $this->render('voiture/new.html.twig', [
+        'voitureForm' => $form->createView(),
+    ]);
 }
+
+
+    
 }
