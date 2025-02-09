@@ -18,130 +18,116 @@ use App\Form\VoitureType;
 
 class UserController extends AbstractController
 {
+    
     #[Route('/user/dashboard', name: 'user_dashboard', methods: ['GET', 'POST'])]
     public function dashboard(Request $request, EntityManagerInterface $entityManager): Response
     {
         $user = $this->getUser();
-
-        
-        
-
+    
         if (!$user) {
-            // Handle the case where the user is not authenticated
+            // Rediriger si l'utilisateur n'est pas connecté
             return $this->redirectToRoute('app_login');
         }
-
+    
         // Charger la configuration associée à l'utilisateur
         $configuration = $entityManager->getRepository(Configuration::class)
             ->findOneBy(['user' => $user]);
-
-        // Déterminer les rôles via les paramètres de configuration
+    
+        if (!$configuration) {
+            // Créer une nouvelle configuration si elle n'existe pas
+            $configuration = new Configuration();
+            $configuration->setUser($user);
+            $entityManager->persist($configuration);
+            $entityManager->flush();
+        }
+    
+        // Charger les paramètres actuels (chauffeur, passager)
         $roles = [];
-        if ($configuration) {
-            foreach ($configuration->getParametres() as $parametre) {
-                $roles[] = $parametre->getPropriete();
-            }
+        foreach ($configuration->getParametres() as $parametre) {
+            $roles[$parametre->getPropriete()] = $parametre->getValeur() === 'oui';
         }
 
-    // Gestion du formulaire pour les chauffeurs
-    if (in_array('chauffeur', $roles)) {
-// Formulaire pour ajouter un véhicule
-$voiture = new Voiture();
-$voiture->setUser($this->getUser());
-$voitureForm = $this->createForm(VoitureType::class, $voiture, [
-    'csrf_protection' => true,
-]);
-$voitureForm->handleRequest($request);
+        // Gestion de la soumission pour modifier les rôles
+    if ($request->isMethod('POST')) {
+        $chauffeurValue = $request->request->get('chauffeur', 'non');
+        $passagerValue = $request->request->get('passager', 'non');
 
-// Formulaire pour ajouter un covoiturage
-$covoiturage = new Covoiturage();
-$covoiturageForm = $this->createForm(CovoiturageType::class, $covoiturage, [
-    'user' => $this->getUser(),
-    'csrf_protection' => true,
-]);
+        // Mettre à jour les paramètres dans la configuration
+        foreach (['chauffeur' => $chauffeurValue, 'passager' => $passagerValue] as $key => $value) {
+            $param = $entityManager->getRepository(Parametre::class)
+                ->findOneBy(['propriete' => $key, 'configuration' => $configuration]);
 
-$covoiturageForm->handleRequest($request);
+            if (!$param) {
+                $param = new Parametre();
+                $param->setPropriete($key);
+                $param->setConfiguration($configuration);
+            }
+            $param->setValeur($value);
+            $entityManager->persist($param);
+        }
 
-// Gérer la soumission du formulaire Voiture
-if ($voitureForm->isSubmitted() && $voitureForm->isValid()) {
-    $voiture->setUser($this->getUser());
-    try {
-        $entityManager->persist($voiture);
         $entityManager->flush();
-        $this->addFlash('success', 'Le véhicule a été ajouté avec succès.');
-        return $this->redirectToRoute('user_dashboard');  // Ajout de la redirection
-    } catch (\Exception $e) {
-        $this->addFlash('error', 'Une erreur est survenue lors de l\'ajout du véhicule.');
+
+        $this->addFlash('success', 'Vos paramètres ont été mis à jour.');
+        return $this->redirectToRoute('user_dashboard');
     }
-}
-
-// Gérer la soumission du formulaire Covoiturage
-if ($covoiturageForm->isSubmitted() && $covoiturageForm->isValid()) {
-    $covoiturage->setUser($this->getUser());
-    $entityManager->persist($covoiturage);
-    $entityManager->flush();
-    $this->addFlash('success', 'Le covoiturage a été ajouté avec succès.');
-}
-
-// Passer les bons formulaires à Twig
-return $this->render('user/dashboard.html.twig', [
-    'roles' => $roles,
-    'voitureForm' => $voitureForm->createView(), // Variable distincte
-    'covoiturageForm' => $covoiturageForm->createView(), // Variable distincte
-    'user' => $user,
-]);
-    } else {
+    
+        // Initialisation des formulaires
+        $voitureForm = null;
+        $covoiturageForm = null;
+    
+        // Afficher les formulaires si l'utilisateur est chauffeur
+        if (!empty($roles['chauffeur']) && $roles['chauffeur']) {
+            // Formulaire pour ajouter un véhicule
+            $voiture = new Voiture();
+            $voiture->setUser($user);
+            $voitureForm = $this->createForm(VoitureType::class, $voiture, [
+                'csrf_protection' => true,
+            ]);
+            $voitureForm->handleRequest($request);
+    
+            // Formulaire pour ajouter un covoiturage
+            $covoiturage = new Covoiturage();
+            $covoiturageForm = $this->createForm(CovoiturageType::class, $covoiturage, [
+                'user' => $user,
+                'csrf_protection' => true,
+            ]);
+            $covoiturageForm->handleRequest($request);
+    
+            // Gestion de la soumission du formulaire Voiture
+            if ($voitureForm->isSubmitted() && $voitureForm->isValid()) {
+                $voiture->setUser($user);
+                try {
+                    $entityManager->persist($voiture);
+                    $entityManager->flush();
+                    $this->addFlash('success', 'Le véhicule a été ajouté avec succès.');
+                    return $this->redirectToRoute('user_dashboard');
+                } catch (\Exception $e) {
+                    $this->addFlash('error', 'Une erreur est survenue lors de l\'ajout du véhicule.');
+                }
+            }
+    
+            // Gestion de la soumission du formulaire Covoiturage
+            if ($covoiturageForm->isSubmitted() && $covoiturageForm->isValid()) {
+                $covoiturage->setUser($user);
+                $entityManager->persist($covoiturage);
+                $entityManager->flush();
+                $this->addFlash('success', 'Le covoiturage a été ajouté avec succès.');
+            }
+        }
+    
+        // Rendre le tableau de bord
         return $this->render('user/dashboard.html.twig', [
             'roles' => $roles,
+            'voitureForm' => $voitureForm ? $voitureForm->createView() : null,
+            'covoiturageForm' => $covoiturageForm ? $covoiturageForm->createView() : null,
             'user' => $user,
         ]);
     }
-}
+    
 
-    private function findOrCreateParametre(Configuration $configuration, string $propriete): Parametre
-    {
-        foreach ($configuration->getParametres() as $parametre) {
-            if ($parametre->getPropriete() === $propriete) {
-                return $parametre;
-            }
-        }
 
-        $parametre = new Parametre();
-        $parametre->setConfiguration($configuration);
-        $parametre->setPropriete($propriete);
-        $configuration->addParametre($parametre);
-
-        return $parametre;
-}
-    #[Route('/user/update-roles', name: 'user_update_roles', methods: ['POST'])]
-    public function updateRoles(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $user = $this->getUser();
     
-        // Récupérer ou créer la configuration de l'utilisateur
-        $configuration = $entityManager->getRepository(Configuration::class)
-            ->findOneBy(['user' => $user]) ?? new Configuration();
-        $configuration->setUser($user);
-    
-        // Récupérer les rôles soumis depuis le formulaire
-        $submittedRoles = $request->request->get('roles', []);
-        if (!is_array($submittedRoles)) {
-            $submittedRoles = [];
-        }
-    
-        // Mettre à jour les paramètres (chauffeur/passager)
-        foreach (['chauffeur', 'passager'] as $role) {
-            $parametre = $this->findOrCreateParametre($configuration, $role);
-            $parametre->setValeur(in_array($role, $submittedRoles));
-        }
-    
-        // Sauvegarder la configuration mise à jour
-        $entityManager->persist($configuration);
-        $entityManager->flush();
-    
-        $this->addFlash('success', 'Vos rôles ont été mis à jour.');
-        return $this->redirectToRoute('user_dashboard');
-    }
 
     #[Route('/voiture/new', name: 'voiture_new', methods: ['GET', 'POST'])]
 public function new(Request $request, EntityManagerInterface $entityManager): Response
@@ -169,4 +155,51 @@ public function new(Request $request, EntityManagerInterface $entityManager): Re
         'voitureForm' => $form->createView(),
     ]);
 }
+
+#[Route('/configuration/update', name: 'configuration_update', methods: ['POST'])]
+public function updateConfiguration(
+    Request $request,
+    EntityManagerInterface $entityManager
+): Response {
+    // Récupérer la configuration à modifier (par exemple, l'id est passé dans le formulaire)
+    $configurationId = $request->request->get('configuration_id');
+    $configuration = $entityManager->getRepository(Configuration::class)->find($configurationId);
+
+    if (!$configuration) {
+        throw $this->createNotFoundException('Configuration non trouvée.');
+    }
+
+    // Récupérer les nouvelles valeurs des paramètres depuis le formulaire
+    $chauffeurValue = $request->request->get('chauffeur', 'non');
+    $passagerValue = $request->request->get('passager', 'non');
+
+    // Récupérer ou créer les paramètres
+    $paramRepository = $entityManager->getRepository(Parametre::class);
+
+    $chauffeurParam = $paramRepository->findOneBy(['propriete' => 'chauffeur', 'configuration' => $configuration]);
+    if (!$chauffeurParam) {
+        $chauffeurParam = new Parametre();
+        $chauffeurParam->setPropriete('chauffeur');
+        $chauffeurParam->setConfiguration($configuration);
+    }
+    $chauffeurParam->setValeur($chauffeurValue);
+
+    $passagerParam = $paramRepository->findOneBy(['propriete' => 'passager', 'configuration' => $configuration]);
+    if (!$passagerParam) {
+        $passagerParam = new Parametre();
+        $passagerParam->setPropriete('passager');
+        $passagerParam->setConfiguration($configuration);
+    }
+    $passagerParam->setValeur($passagerValue);
+
+    // Persister les modifications
+    $entityManager->persist($chauffeurParam);
+    $entityManager->persist($passagerParam);
+    $entityManager->flush();
+
+    $this->addFlash('success', 'Configuration mise à jour avec succès.');
+
+    return $this->redirectToRoute('configuration_dashboard');
+}
+
 }

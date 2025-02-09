@@ -4,82 +4,89 @@
 
 {% block body %}
 <div class="container mt-5">
-    <h1 class="text-center mb-4">Bienvenue, {{ app.user.pseudo }}</h1>
+    <h1 class="text-center mb-4">Bienvenue, {{ user.pseudo }}</h1>
 
-    <!-- Section des rôles -->
+    <!-- Affichage des rôles actuels -->
     <div class="card shadow-lg mb-4">
         <div class="card-header text-center">
-            <h2>Votre rôle</h2>
+            <h2>Vos rôles actuels</h2>
         </div>
         <div class="card-body">
             <ul>
-                {% if 'chauffeur' in roles %}
-                    <li class="text-success">Chauffeur</li>
-                {% endif %}
-                {% if 'passager' in roles %}
-                    <li class="text-success">Passager</li>
-                {% endif %}
+                <li>Chauffeur : <strong>{{ roles.chauffeur ? 'Actif' : 'Inactif' }}</strong></li>
+                <li>Passager : <strong>{{ roles.passager ? 'Actif' : 'Inactif' }}</strong></li>
             </ul>
-
-            <!-- Formulaire pour modifier les rôles -->
-            <div class="card-header text-center mt-4">
-                <h3>Modifier vos rôles</h3>
-            </div>
-            <div class="card-body">
-                <form method="post" action="{{ path('user_update_roles') }}">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="role_chauffeur" name="roles[]" value="chauffeur" {% if 'chauffeur' in roles %} checked {% endif %}>
-                        <label class="form-check-label" for="role_chauffeur">Chauffeur</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="role_passager" name="roles[]" value="passager" {% if 'passager' in roles %} checked {% endif %}>
-                        <label class="form-check-label" for="role_passager">Passager</label>
-                    </div>
-                    <button type="submit" class="btn btn-success mt-3">Enregistrer les modifications</button>
-                </form>
-            </div>
+        </div>
+    </div>
+    <!-- Formulaire pour modifier les rôles -->
+    <div class="card shadow-lg">
+        <div class="card-header text-center">
+            <h3>Modifier vos préférences</h3>
+        </div>
+        <div class="card-body">
+            <form method="post" action="{{ path('user_dashboard') }}">
+                <div class="form-check">
+                    <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="chauffeur"
+                        name="chauffeur"
+                        value="oui"
+                        {% if roles.chauffeur %} checked {% endif %}
+                    >
+                    <label class="form-check-label" for="chauffeur">Chauffeur</label>
+                </div>
+                <div class="form-check">
+                    <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="passager"
+                        name="passager"
+                        value="oui"
+                        {% if roles.passager %} checked {% endif %}
+                    >
+                    <label class="form-check-label" for="passager">Passager</label>
+                </div>
+                <button type="submit" class="btn btn-primary mt-3">Enregistrer</button>
+            </form>
         </div>
     </div>
 
-    {% if 'chauffeur' in roles %}
-        <!-- Formulaire pour ajouter un véhicule -->
-        <div class="container my-5">
-            <h2 class="text-center mb-4">Renseigner votre véhicule</h2>
-            <div class="card shadow-sm p-4">
-                {{ form_start(voitureForm, {'attr': {'novalidate': 'novalidate'}}) }}
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        {{ form_row(voitureForm.immatriculation, { 'label': 'Plaque d\'immatriculation', 'attr': { 'class': 'form-control', 'placeholder': 'Ex : AB-123-CD' } }) }}
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        {{ form_row(voitureForm.datePremiereImmatriculation, { 'label': 'Date de première immatriculation', 'attr': { 'class': 'form-control', 'placeholder': 'jj/mm/aaaa' } }) }}
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        {{ form_row(voitureForm.modele, { 'label': 'Modèle', 'attr': { 'class': 'form-control', 'placeholder': 'Ex : Clio' } }) }}
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        {{ form_row(voitureForm.marque, { 'label': 'Marque', 'attr': { 'class': 'form-control', 'placeholder': 'Ex : Renault' } }) }}
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        {{ form_row(voitureForm.couleur, { 'label': 'Couleur', 'attr': { 'class': 'form-control', 'placeholder': 'Ex : Rouge' } }) }}
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        {{ form_row(voitureForm.energie, { 'label': 'Énergie', 'attr': { 'class': 'form-control', 'placeholder': 'Ex : Électrique' } }) }}
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col text-center">
-                        <button type="submit" class="btn btn-success btn-lg w-50">Ajouter ce véhicule</button>
-                    </div>
-                </div>
+    <!-- Formulaires pour Chauffeur -->
+    {% if roles.chauffeur %}
+        <div class="card shadow-lg mb-4">
+            <div class="card-header text-center">
+                <h3>Ajouter un véhicule</h3>
+            </div>
+            <div class="card-body">
+                {{ form_start(voitureForm) }}
+                {{ form_widget(voitureForm) }}
+                <button type="submit" class="btn btn-primary mt-3">Ajouter un véhicule</button>
                 {{ form_end(voitureForm) }}
             </div>
         </div>
 
+        <div class="card shadow-lg">
+            <div class="card-header text-center">
+                <h3>Ajouter un covoiturage</h3>
+            </div>
+            <div class="card-body">
+                {{ form_start(covoiturageForm) }}
+                {{ form_widget(covoiturageForm) }}
+                <button type="submit" class="btn btn-primary mt-3">Ajouter un covoiturage</button>
+                {{ form_end(covoiturageForm) }}
+            </div>
+        </div>
+    {% else %}
+        <div class="alert alert-info text-center">
+            Vous êtes passager. Aucune action n'est requise ici.
+        </div>
+    {% endif %}
+</div>
+
+
+
+   
         <!-- Liste des voyages -->
         <div class="container my-5">
             <div class="card shadow-sm p-4">
@@ -109,7 +116,7 @@
                 {% endif %}
             </div>
         </div>
-    {% endif %}
+  
 
     <!-- Liste des véhicules -->
     <div class="container my-5">
