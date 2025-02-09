@@ -71,10 +71,9 @@
                 <h3>Ajouter un covoiturage</h3>
             </div>
             <div class="card-body">
-                {{ form_start(covoiturageForm) }}
-                {{ form_widget(covoiturageForm) }}
-                <button type="submit" class="btn btn-primary mt-3">Ajouter un covoiturage</button>
-                {{ form_end(covoiturageForm) }}
+                <div class="col text-center">
+                            <a href="{{ path('saisir_un_voyage') }}" class="btn btn-success btn-lg w-50">Saisir un voyage</a>
+                            </div>
             </div>
         </div>
     {% else %}
@@ -108,9 +107,7 @@
                             </li>
                         {% endfor %}
                     </ul>
-                    <div class="col text-center">
-                            <a href="{{ path('saisir_un_voyage') }}" class="btn btn-success btn-lg w-50">Saisir un voyage</a>
-                            </div>
+                    
                 {% else %}
                     <p class="text-center text-muted">Vous n'avez aucun voyage enregistré.</p>
                 {% endif %}
