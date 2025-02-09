@@ -447,6 +447,20 @@ private int $credit = 20;
         return $this;
     }
 
-    
+    public function getAverageNote(): ?float
+{
+    if ($this->avis->isEmpty()) {
+        return null; // Aucun avis, retourne null
+    }
+
+    $total = 0;
+    foreach ($this->avis as $avis) {
+        $total += $avis->getNote(); // Assurez-vous que l'entité `Avis` a une méthode getNote()
+    }
+
+    return round($total / count($this->avis), 1); // Moyenne arrondie à 1 décimale
+}
+
+
 }
 
