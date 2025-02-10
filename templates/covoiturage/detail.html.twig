@@ -145,7 +145,7 @@
 		</div>
 	</div>
 
-    <!-- Modal Bootstrap -->
+ <!-- Modal Bootstrap -->
 <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -155,12 +155,12 @@
             </div>
             <div class="modal-body">
                 <p>Êtes-vous sûr de vouloir participer à ce covoiturage ?</p>
-                <p><strong>Trajet :</strong> {{ covoiturage.lieuDepart }} - {{ covoiturage.lieuDepart }}</p>
+                <p><strong>Trajet :</strong> {{ covoiturage.lieuDepart }} - {{ covoiturage.lieuArrivee }}</p>
                 <p><strong>Prix en crédits :</strong> {{ covoiturage.prixPersonne }}</p>
                 <p><strong>Places restantes :</strong> {{ covoiturage.nbPlace }}</p>
             </div>
             <div class="modal-footer">
-                <form method="post">
+                <form method="post" action="{{ path('covoiturage_participer', {'id': covoiturage.id}) }}">
                     <button type="submit" class="btn btn-success">Confirmer</button>
                 </form>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>

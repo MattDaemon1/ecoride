@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use Symfony\Bundle\SecurityBundle\Security;
 use App\Entity\Configuration;
 use App\Entity\Covoiturage;
 use App\Entity\Voiture;
@@ -14,63 +15,58 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class CovoiturageController extends AbstractController
 {
-    #[Route('/covoiturage/{id}/participer', name: 'covoiturage_participer', methods: ['GET', 'POST'])]
-    public function participer(int $id, Request $request, EntityManagerInterface $entityManager): Response
+    #[Route('/covoiturage/{id}/participer', name: 'covoiturage_participer', methods: ['POST'])]
+    public function participer(int $id, EntityManagerInterface $entityManager, Security $security): Response
     {
-        $user = $this->getUser(); // Récupère l'utilisateur connecté
+        $user = $security->getUser();
+    
         if (!$user) {
+            $this->addFlash('error', 'Vous devez être connecté pour participer à un covoiturage.');
             return $this->redirectToRoute('app_login');
         }
-
+    
+        // Récupérer le covoiturage concerné
         $covoiturage = $entityManager->getRepository(Covoiturage::class)->find($id);
-
+    
         if (!$covoiturage) {
-            throw $this->createNotFoundException('Covoiturage non trouvé.');
+            $this->addFlash('error', 'Covoiturage introuvable.');
+            return $this->redirectToRoute('app_search');
         }
-
-        // Vérification des places et crédits
+    
+        // Vérifier que l'utilisateur a assez de crédits
+        $prix = $covoiturage->getPrixPersonne();
+        if ($user->getCredit() < $prix) {
+            $this->addFlash('error', 'Vous n\'avez pas assez de crédits pour ce covoiturage.');
+            return $this->redirectToRoute('covoiturage_detail', ['id' => $id]);
+        }
+    
+        // Vérifier s'il reste des places
         if ($covoiturage->getNbPlace() <= 0) {
-            $this->addFlash('error', 'Plus de places disponibles pour ce trajet.');
+            $this->addFlash('error', 'Plus de places disponibles.');
             return $this->redirectToRoute('covoiturage_detail', ['id' => $id]);
         }
-
-        if ($user->getCredit() < $covoiturage->getPrixPersonne()) {
-            $this->addFlash('error', 'Crédits insuffisants.');
-            return $this->redirectToRoute('covoiturage_detail', ['id' => $id]);
-        }
-
-    // Ajoutez ici la logique pour confirmer la participation
-
-    $this->addFlash('success', 'Votre participation a été confirmée.');
-    return $this->redirectToRoute('covoiturage_detail', ['id' => $id]);
-
-        // Double confirmation
-        if ($request->isMethod('POST')) {
-            // Mise à jour des données
-            $user->setCredit($user->getCredit() - $covoiturage->getPrixPersonne());
-            $covoiturage->setNbPlace($covoiturage->getNbPlace() - 1);
-
-            $entityManager->persist($user);
-            $entityManager->persist($covoiturage);
-            $entityManager->flush();
-
-            $this->addFlash('success', 'Votre participation a été confirmée.');
-            return $this->redirectToRoute('covoiturage_detail', ['id' => $id]);
-        }
-
-        return $this->render('covoiturage/participer.html.twig', [
-            'covoiturage' => $covoiturage,
-            'user' => $user
-        ]);
+    
+        // Débiter les crédits du passager
+        $user->setCredit($user->getCredit() - $prix);
+    
+        // Ajouter les crédits au chauffeur
+        $chauffeur = $covoiturage->getUser();
+        $chauffeur->setCredit($chauffeur->getCredit() + $prix);
+    
+        // Réduire le nombre de places disponibles
+        $covoiturage->setNbPlace($covoiturage->getNbPlace() - 1);
+    
+        // Enregistrer en base de données
+        $entityManager->persist($user);
+        $entityManager->persist($chauffeur);
+        $entityManager->persist($covoiturage);
+        $entityManager->flush();
+    
+        $this->addFlash('success', 'Vous avez rejoint le covoiturage avec succès.');
+    
+        return $this->redirectToRoute('covoiturage_detail', ['id' => $id]);
     }
-
-    #[Route('/covoiturage', name: 'app_covoiturage')]
-    public function index(): Response
-    {
-        return $this->render('covoiturage/index.html.twig', [
-            'controller_name' => 'CovoiturageController',
-        ]);
-    }
+    
 
     #[Route('/covoiturage/{id}', name: 'covoiturage_detail', methods: ['GET'])]
 public function detail(int $id, EntityManagerInterface $entityManager): Response

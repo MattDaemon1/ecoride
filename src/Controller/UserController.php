@@ -39,10 +39,19 @@ class UserController extends AbstractController
             $configuration->setUser($user);
             $entityManager->persist($configuration);
             $entityManager->flush();
+
+             // Assigner le rôle "chauffeur" par défaut
+        $chauffeurParam = new Parametre();
+        $chauffeurParam->setPropriete('chauffeur');
+        $chauffeurParam->setValeur('oui'); // Par défaut, l'utilisateur est chauffeur
+        $chauffeurParam->setConfiguration($configuration);
+
+        $entityManager->persist($chauffeurParam);
+        $entityManager->flush();
         }
     
         // Charger les paramètres actuels (chauffeur, passager)
-        $roles = [];
+        $roles = ['chauffeur' => false, 'passager' => false];
         foreach ($configuration->getParametres() as $parametre) {
             $roles[$parametre->getPropriete()] = $parametre->getValeur() === 'oui';
         }

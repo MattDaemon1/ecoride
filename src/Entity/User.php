@@ -435,12 +435,13 @@ private int $credit = 20;
         return $this->imageSize;
     }
 
+
     public function getCredit(): ?int
     {
         return $this->credit;
     }
 
-    public function setCredit(int $credit): static
+    public function setCredit(int $credit): self
     {
         $this->credit = $credit;
 
