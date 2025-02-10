@@ -119,6 +119,7 @@ public function saisirVoyage(Request $request, EntityManagerInterface $entityMan
         'covoiturageForm' => $form->createView(),
         'roles' => $roles,
         'voitures' => $voitures, // ✅ Passage des voitures à la vue
+        'user' => $user,
     ]);
 }
 
