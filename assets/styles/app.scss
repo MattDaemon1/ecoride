@@ -99,7 +99,10 @@ h2 {
 }
 
 /* Search Bar */
-.search-bar {
+.search-bar .row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   position: relative;
   /* Change absolute en relative pour éviter qu'il dépasse */
   margin-top: -50px;
@@ -112,12 +115,16 @@ h2 {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   width: 100%;
   max-width: 1200px;
+  gap: 10px;
 
   form {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-wrap: wrap; /* Permet l'ajustement en responsive */
+    justify-content: center; /* Centre horizontalement */
+    align-items: center; /* Centre verticalement */
+    gap: 15px; /* Espacement uniforme entre les éléments */
     width: 100%;
+    height: 100%; /* Assure un centrage vertical */
 
 
     .form-control {
@@ -136,6 +143,15 @@ h2 {
       }
     }
   }
+}
+
+.search-fields {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: nowrap; /* Empêche les champs de passer à la ligne */
+  width: 100%;
 }
 
 /* Footer */

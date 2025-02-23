@@ -1,17 +1,46 @@
 <div class="container-fluid">
-	<header class="d-flex flex-wrap align-items-center justify-content-between py-3 mb-4 border-bottom">
-		<div class="col-md-3">
-			<a href="/" class="d-inline-flex link-body-emphasis text-decoration-none">
-				<img src="{{ asset('build/images/logo_Ecoride.png') }}" alt="logo ecoride" width="100" height="100">
-			</a>
-		</div>
-		<ul class="nav col-md-auto justify-content-center mb-2 mb-md-0">
-			<li><a href="{{ path('app_home') }}" class="nav-link px-2">Accueil</a></li>
-			<li><a href="{{ path('search_route') }}" class="nav-link px-2">Covoiturage</a></li>
-			<li><a href="{{ path('app_contact') }}" class="nav-link px-2">Contact</a></li>
-		</ul>
-		<div class="col-md-3 text-end">
-			<a href="{{ path('app_login') }}" class="btn btn-primary">Connexion</a>
-		</div>
-	</header>
+    <nav class="navbar navbar-expand-md navbar-light bg-light border-bottom">
+        <div class="container-fluid">
+            <!-- Logo -->
+            <a href="/" class="navbar-brand">
+                <img src="{{ asset('build/images/logo_Ecoride.png') }}" alt="logo ecoride" width="100" height="100">
+            </a>
+
+            <!-- Bouton Burger -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Menu -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a href="{{ path('app_home') }}" class="nav-link">Accueil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ path('search_route') }}" class="nav-link">Covoiturage</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ path('app_contact') }}" class="nav-link">Contact</a>
+                    </li>
+                </ul>
+
+                <!-- Connexion Bouton -->
+                <div class="d-flex">
+    {% if app.user %}
+    {% if is_granted('ROLE_ADMIN') %}
+        <a href="{{ path('admin') }}" class="btn btn-success">Dashboard</a>
+    {% elseif is_granted('ROLE_USER') %}
+        <a href="{{ path('user_dashboard') }}" class="btn btn-success">Dashboard</a>
+    {% endif %}
+    <a href="{{ path('app_logout') }}" class="btn btn-danger ms-2">Déconnexion</a>
+{% else %}
+    <a href="{{ path('app_login') }}" class="btn btn-primary">Connexion</a>
+{% endif %}
+
+</div>
+            </div>
+        </div>
+    </nav>
 </div>

@@ -26,21 +26,20 @@
 
 		<div class="search-bar bg-light py-4 px-3 rounded shadow-sm">
 			{{ form_start(form) }}
-			<div class="row g-3 align-items-center">
-				<div class="col-md-3">
-					{{ form_row(form.lieuDepart) }}
-				</div>
-				<div class="col-md-3">
-					{{ form_row(form.lieuArrivee) }}
-				</div>
-				<div class="col-md-3">
-					{{ form_row(form.dateDepart) }}
-				</div>
-				<div class="col-md-3 d-flex align-items-end">
-					<button type="submit" class="btn btn-success w-100">
-						<i class="fas fa-search"></i>
-						Rechercher
-					</button>
+			<div class="row g-2 align-items-center justify-content-center">
+            <div class="col-md-3">
+                {{ form_row(form.lieuDepart) }}
+            </div>
+            <div class="col-md-3">
+                {{ form_row(form.lieuArrivee) }}
+            </div>
+            <div class="col-md-3">
+                {{ form_row(form.dateDepart) }}
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-success w-100">
+                    <i class="fas fa-search"></i> Rechercher
+                </button>
 				</div>
 			</div>
 			{{ form_end(form) }}
